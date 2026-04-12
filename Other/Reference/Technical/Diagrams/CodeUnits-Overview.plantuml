@@ -1,0 +1,11 @@
+@startuml CodeUnits-Overview
+title CodeUnits of ScriptCollection
+
+[ScriptCollection]
+note as ScriptCollectionNote
+  ScriptCollection is the place for reusable scripts.
+end note
+ScriptCollection .. ScriptCollectionNote
+
+
+@enduml

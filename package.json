@@ -1,0 +1,7 @@
+{
+  "name": "ScriptCollection",
+  "scripts": {
+    "prepare": "husky"
+  },
+  "version": "4.2.69"
+}

@@ -1,0 +1,33 @@
+version: '3'
+
+tasks:
+
+  BaseBuildAllCodeunits:
+    desc: "Base: Build all codeunits"
+    silent: true
+    dir: "."
+    cmds:
+      - "scbuildcodeunits {{.CLI_ARGS}}"
+    aliases:
+      - basebuildallcodeunits
+      - bb
+
+  BaseBuildAllCodeunitsContainerized:
+    desc: "Base: Build all codeunits containerized"
+    silent: true
+    dir: "."
+    cmds:
+      - "scbuildcodeunitsc {{.CLI_ARGS}}"
+    aliases:
+      - basebuildallcodeunitscontainerized
+      - bd
+
+  BaseUpdateDependencies:
+    desc: "Base: Update dependencies"
+    silent: true
+    dir: "."
+    cmds:
+      - "scupdatedependencies {{.CLI_ARGS}}"
+    aliases:
+      - baseupdatedependencies
+      - bud
