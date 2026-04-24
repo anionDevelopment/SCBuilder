@@ -1,0 +1,3 @@
+ImageName;UpstreamRegistryAddress;DefaultTag
+Debian;docker.io/library/debian;13.4-slim
+Syft;docker.io/anchore/syft;v1.41.2
