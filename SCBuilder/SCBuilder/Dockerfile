@@ -15,16 +15,34 @@ RUN mkdir /Workspace && \
     apt-get update
 
 #install essential tools
-RUN apt-get install -y curl git wget nano python3 python3-pip python3-venv openjdk-21-jdk nodejs npm unzip xz-utils zip libglu1-mesa clang cmake ninja-build pkg-config libgtk-3-dev ca-certificates 
+RUN apt-get install -y curl git wget nano gnupg python3 python3-pip python3-venv openjdk-21-jdk nodejs npm unzip xz-utils zip libglu1-mesa clang cmake ninja-build pkg-config libgtk-3-dev ca-certificates 
+#TODO set java-version to install via env-variable
+#TODO set node-version to install via env-variable
+
+#TODO change user to non-root-user
+
+#install angular-cli
 RUN npm i -g @angular/cli
+
+#install epew
 #TODO install epew
 
 #install scriptcollection
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-#TODO RUN pip install ${PipIndexUrlArguments} scriptcollection
-ADD scriptcollection-4.2.70-py3-none-any.whl /Workspace/scriptcollection-4.2.70-py3-none-any.whl
-RUN pip install /Workspace/scriptcollection-4.2.70-py3-none-any.whl
+RUN pip install ${PipIndexUrlArguments} scriptcollection
+
+#install docker
+RUN install -m 0755 -d /etc/apt/keyrings && \
+    curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
+    chmod a+r /etc/apt/keyrings/docker.gpg && \
+    echo \
+      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
+      $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+      tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+    apt-get update && \
+    apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin && \
+    rm -rf /var/lib/apt/lists/*
 
 #install flutter
 WORKDIR /Workspace/Tools
@@ -40,7 +58,7 @@ RUN wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod
     rm packages-microsoft-prod.deb && \
     apt-get update && \
     apt-get install -y dotnet-sdk-10.0
-ENV PATH="$PATH:/root/.dotnet/tools"
+ENV PATH="/root/.dotnet/tools:${PATH}"
 
 #install go
 RUN curl -fsSL https://go.dev/dl/go${GoVersion}.linux-${PlatformForGoVersion}.tar.gz -o /tmp/go.tar.gz \
@@ -50,16 +68,10 @@ RUN curl -fsSL https://go.dev/dl/go${GoVersion}.linux-${PlatformForGoVersion}.ta
 ENV PATH="/usr/local/go/bin:${PATH}"
 
 #install common tools
-RUN dotnet tool install --global GitVersion.Tool && \
-    ln -s /root/.dotnet/tools/dotnet-gitversion /root/.dotnet/tools/gitversion && \
+RUN dotnet tool install --global GitVersion.Tool && ln -s /root/.dotnet/tools/dotnet-gitversion /root/.dotnet/tools/gitversion && \
     dotnet tool install --global dotnet-reportgenerator-globaltool && \
     dotnet tool install --global docfx && \
     dotnet tool install --global dotnet-t4
-
-#install docker
-RUN curl -fsSL https://get.docker.com -o get-docker.sh && \
-    sh ./get-docker.sh && \
-    rm get-docker.sh
 
 #cleanup
 RUN rm -rf /var/lib/apt/lists/*

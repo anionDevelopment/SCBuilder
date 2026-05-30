@@ -35,6 +35,9 @@ This is required for legal reasons because otherwise a product is not maintainab
 When adding new features, do not alter the existing project architecture.
 New code must follow the same style, structure, and patterns already established in the codebase.
 Look at existing features as the reference implementation and build analogously.
+If there is a file called HowToBuild.md for the code you changed then you must ensure that when your work is finished the project is buildable using the instruction in HowToBuild.md without generating any changes in the repository.
+There must be doc-comments for all functions you write except helper-scripts. The access-modifier does not matter for this rule.
+There must be unit-tests for every new or changed function-behavior.
 
 ---
 
