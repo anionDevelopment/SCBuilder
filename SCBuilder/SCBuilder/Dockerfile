@@ -46,11 +46,11 @@ RUN install -m 0755 -d /etc/apt/keyrings && \
 
 #install flutter
 WORKDIR /Workspace/Tools
-RUN git clone https://github.com/flutter/flutter.git -b stable --depth 1
-ENV PATH="/Workspace/Tools/flutter/bin:/Workspace/Tools/flutter/bin/cache/dart-sdk/bin:${PATH}"
-RUN flutter doctor -v && \
-    flutter precache && \
-    flutter config --enable-linux-desktop
+#RUN git clone https://github.com/flutter/flutter.git -b stable --depth 1
+#ENV PATH="/Workspace/Tools/flutter/bin:/Workspace/Tools/flutter/bin/cache/dart-sdk/bin:${PATH}"
+#RUN flutter doctor -v && \
+#    flutter precache && \
+#    flutter config --enable-linux-desktop
 
 #install dotnet
 RUN wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
@@ -61,11 +61,11 @@ RUN wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod
 ENV PATH="/root/.dotnet/tools:${PATH}"
 
 #install go
-RUN curl -fsSL https://go.dev/dl/go${GoVersion}.linux-${PlatformForGoVersion}.tar.gz -o /tmp/go.tar.gz \
-    && rm -rf /usr/local/go \
-    && tar -C /usr/local -xzf /tmp/go.tar.gz \
-    && rm /tmp/go.tar.gz
-ENV PATH="/usr/local/go/bin:${PATH}"
+#RUN curl -fsSL https://go.dev/dl/go${GoVersion}.linux-${PlatformForGoVersion}.tar.gz -o /tmp/go.tar.gz \
+#    && rm -rf /usr/local/go \
+#    && tar -C /usr/local -xzf /tmp/go.tar.gz \
+#    && rm /tmp/go.tar.gz
+#ENV PATH="/usr/local/go/bin:${PATH}"
 
 #install common tools
 RUN dotnet tool install --global GitVersion.Tool && ln -s /root/.dotnet/tools/dotnet-gitversion /root/.dotnet/tools/gitversion && \
@@ -73,5 +73,10 @@ RUN dotnet tool install --global GitVersion.Tool && ln -s /root/.dotnet/tools/do
     dotnet tool install --global docfx && \
     dotnet tool install --global dotnet-t4
 
+# TODO download plantutml, mediamtx, etc.
+
 #cleanup
 RUN rm -rf /var/lib/apt/lists/*
+
+#set commands
+ENV ISRUNNINGINBUILDCONTAINER="true"
