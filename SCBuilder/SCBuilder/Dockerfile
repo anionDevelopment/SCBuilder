@@ -18,8 +18,7 @@ RUN mkdir /Workspace && \
 RUN apt-get install -y curl git wget nano gnupg python3 python3-pip python3-venv openjdk-21-jdk nodejs npm unzip xz-utils zip libglu1-mesa clang cmake ninja-build pkg-config libgtk-3-dev ca-certificates 
 #TODO set java-version to install via env-variable
 #TODO set node-version to install via env-variable
-
-#TODO change user to non-root-user
+#TODO install ffmpeg
 
 #install angular-cli
 RUN npm i -g @angular/cli
@@ -73,7 +72,7 @@ RUN dotnet tool install --global GitVersion.Tool && ln -s /root/.dotnet/tools/do
     dotnet tool install --global docfx && \
     dotnet tool install --global dotnet-t4
 
-# TODO download plantutml, mediamtx, etc.
+RUN scdownloadcachabletools
 
 #cleanup
 RUN rm -rf /var/lib/apt/lists/*
