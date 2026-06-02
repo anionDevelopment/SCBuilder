@@ -29,9 +29,9 @@ RUN npm i -g @angular/cli@21.2.13
 #install scriptcollection
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install ${PipIndexUrlArguments} scriptcollection
+RUN pip install ${PipIndexUrlArguments} scriptcollection==4.2.105
 
-RUN scdownloadcachabletools
+RUN scdownloadcachabletools -v
 
 #install docker
 RUN install -m 0755 -d /etc/apt/keyrings && \
