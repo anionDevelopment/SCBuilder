@@ -15,7 +15,7 @@ RUN mkdir /Workspace && \
     apt-get update
 
 #install essential tools
-RUN apt-get install -y curl git wget nano gnupg python3 python3-pip python3-venv openjdk-21-jdk nodejs npm unzip xz-utils zip libglu1-mesa clang cmake ninja-build pkg-config libgtk-3-dev ca-certificates 
+RUN apt-get install -y curl git wget build-essential nano gnupg python3 python3-pip python3-venv openjdk-21-jdk nodejs npm unzip xz-utils zip libglu1-mesa clang cmake ninja-build pkg-config libgtk-3-dev ca-certificates 
 #TODO set java-version to install via env-variable
 #TODO set node-version to install via env-variable
 #TODO install ffmpeg
@@ -29,7 +29,9 @@ RUN npm i -g @angular/cli@21.2.13
 #install scriptcollection
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install ${PipIndexUrlArguments} scriptcollection==4.2.99
+RUN pip install ${PipIndexUrlArguments} scriptcollection
+
+RUN scdownloadcachabletools
 
 #install docker
 RUN install -m 0755 -d /etc/apt/keyrings && \
@@ -73,8 +75,6 @@ RUN dotnet tool install --global GitVersion.Tool --version 6.7.0 && ln -s /root/
     dotnet tool install --global dotnet-t4 --version 3.0.0 && \
     dotnet tool install --global CycloneDX --version 6.2.0 && \
     dotnet tool install --global swashbuckle.aspnetcore.cli --version 10.2.1
-
-RUN scdownloadcachabletools
 
 #cleanup
 RUN rm -rf /var/lib/apt/lists/*
