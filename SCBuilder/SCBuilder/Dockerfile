@@ -22,7 +22,7 @@ RUN apt-get install -y curl git wget nano gnupg python3 python3-pip python3-venv
 #TODO change user to non-root-user
 
 #install angular-cli
-RUN npm i -g @angular/cli
+RUN npm i -g @angular/cli@21.2.13
 
 #install epew
 #TODO install epew
@@ -30,7 +30,7 @@ RUN npm i -g @angular/cli
 #install scriptcollection
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install ${PipIndexUrlArguments} scriptcollection
+RUN pip install ${PipIndexUrlArguments} scriptcollection==4.2.99
 
 #install docker
 RUN install -m 0755 -d /etc/apt/keyrings && \
@@ -68,10 +68,12 @@ ENV PATH="/root/.dotnet/tools:${PATH}"
 #ENV PATH="/usr/local/go/bin:${PATH}"
 
 #install common tools
-RUN dotnet tool install --global GitVersion.Tool && ln -s /root/.dotnet/tools/dotnet-gitversion /root/.dotnet/tools/gitversion && \
-    dotnet tool install --global dotnet-reportgenerator-globaltool && \
-    dotnet tool install --global docfx && \
-    dotnet tool install --global dotnet-t4
+RUN dotnet tool install --global GitVersion.Tool --version 6.7.0 && ln -s /root/.dotnet/tools/dotnet-gitversion /root/.dotnet/tools/gitversion && \
+    dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.5.10 && \
+    dotnet tool install --global docfx --version 2.78.5 && \
+    dotnet tool install --global dotnet-t4 --version 3.0.0 && \
+    dotnet tool install --global CycloneDX --version 6.2.0 && \
+    dotnet tool install --global swashbuckle.aspnetcore.cli --version 10.2.1
 
 # TODO download plantutml, mediamtx, etc.
 
