@@ -21,7 +21,8 @@ RUN apt-get install -y curl git wget build-essential nano gnupg python3 python3-
 #TODO install ffmpeg
 
 #install angular-cli
-RUN npm i -g @angular/cli@21.2.13
+RUN npm install -g @angular/cli@21.2.13 && \
+    npm install -g @go-task/cli@3.51.1
 
 #install epew
 #TODO install epew
