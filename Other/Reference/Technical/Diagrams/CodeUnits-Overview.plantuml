@@ -1,11 +1,11 @@
 @startuml CodeUnits-Overview
-title CodeUnits of ScriptCollection
+title CodeUnits of SCBuilder
 
-[ScriptCollection]
-note as ScriptCollectionNote
-  ScriptCollection is the place for reusable scripts.
+[SCBuilder]
+note as SCBuilderNote
+  SCBuilder is the builder image to get used with the ScriptCollection.
 end note
-ScriptCollection .. ScriptCollectionNote
+SCBuilder .. SCBuilderNote
 
 
 @enduml
