@@ -1,22 +1,26 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<cps:codeunit xmlns:cps="https://projects.aniondev.de/PublicProjects/Common/ProjectTemplates/-/tree/main/Conventions/RepositoryStructure/CommonProjectStructure" codeunitspecificationversion="2.9.4"
+<?xml version="1.0" encoding="UTF-8"?>
+<cps:codeunit
+    xmlns:cps="https://projects.aniondev.de/PublicProjects/Common/ProjectTemplates/-/tree/main/Conventions/RepositoryStructure/CommonProjectStructure"
+    codeunitspecificationversion="2.9.4"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://projects.aniondev.de/PublicProjects/Common/ProjectTemplates/-/raw/v2.9.4/Conventions/RepositoryStructure/CommonProjectStructure/codeunit.xsd" enabled="true">
-    <cps:name>ScriptCollection</cps:name>
-    <cps:version>4.2.69</cps:version>
+    <cps:name>SCBuilder</cps:name>
+    <cps:version>1.0.0</cps:version>
     <cps:codeunitownername>Marius Göcke</cps:codeunitownername>
     <cps:codeunitowneremailaddress>marius.goecke@gmail.com</cps:codeunitowneremailaddress>
-    <cps:properties codeunithastestablesourcecode="true" codeunithasupdatabledependencies="true" throwexceptionifcodeunitfilecannotbevalidated="true" developmentstate="Active development" description="SCBuilder is the builder image to get used with the ScriptCollection.">
-        <cps:testsettings minimalcodecoverageinpercent="20"/>
+    <cps:properties codeunithastestablesourcecode="false" codeunithasupdatabledependencies="false"
+        throwexceptionifcodeunitfilecannotbevalidated="true" developmentstate="Active development"
+        description="SCBuilder is the builder image to get used with the ScriptCollection.">
+        <cps:testsettings minimalcodecoverageinpercent="20" />
         <cps:pipelinedemands>
         </cps:pipelinedemands>
         <cps:updatesettings>
             <cps:ignoreddependencies>
-            <cps:ignoreddependency>cyclonedx-bom</cps:ignoreddependency>
-            <cps:ignoreddependency>lxml</cps:ignoreddependency>
+                <cps:ignoreddependency>cyclonedx-bom</cps:ignoreddependency>
+                <cps:ignoreddependency>lxml</cps:ignoreddependency>
             </cps:ignoreddependencies>
         </cps:updatesettings>
     </cps:properties>
-    <cps:dependentcodeunits/>
+    <cps:dependentcodeunits />
     <cps:developerteam>
         <cps:developer>
             <cps:developername>Marius Göcke</cps:developername>
