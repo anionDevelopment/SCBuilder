@@ -1,3 +1,4 @@
 ImageName;UpstreamRegistryAddress;DefaultTag
 Debian;docker.io/library/debian;13.4-slim
 Syft;docker.io/anchore/syft;v1.41.2
+Betterleaks;ghcr.io/betterleaks/betterleaks;v1.4.1
