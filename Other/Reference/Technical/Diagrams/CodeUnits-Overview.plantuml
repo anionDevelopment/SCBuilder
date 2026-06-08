@@ -7,5 +7,11 @@ note as SCBuilderNote
 end note
 SCBuilder .. SCBuilderNote
 
+[SCGitHubRunner]
+note as SCGitHubRunnerNote
+  SCGitHubRunner is a slim, self-hosted GitHub-Actions-runner image that starts job-containers and keeps their externals host-identical.
+end note
+SCGitHubRunner .. SCGitHubRunnerNote
+
 
 @enduml

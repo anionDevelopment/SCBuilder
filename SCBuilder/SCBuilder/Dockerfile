@@ -5,6 +5,9 @@ ARG DotNetRuntime
 ARG PipIndexUrlArguments
 ARG GoVersion
 ARG PlatformForGoVersion
+ARG JavaVersion=21
+ARG NodeVersion=22
+ARG UpgradeScriptCollection=false
 LABEL version=${CodeUnitVersion}
 ENV ISRUNNINGINCONTAINER="true"
 #TODO make it possible to have an own apt-server for apt-packages to get rid of rate limits
@@ -15,25 +18,29 @@ RUN mkdir /Workspace && \
     apt-get update
 
 #install essential tools
-RUN apt-get install -y curl git wget build-essential nano gnupg python3 python3-pip python3-venv openjdk-21-jdk nodejs npm unzip xz-utils zip libglu1-mesa clang cmake ninja-build pkg-config libgtk-3-dev ca-certificates 
-#TODO set java-version to install via env-variable
-#TODO set node-version to install via env-variable
-#TODO install ffmpeg
+RUN apt-get install -y ca-certificates curl git wget build-essential nano gnupg python3 python3-pip python3-venv openjdk-${JavaVersion}-jdk xz-utils zip unzip libglu1-mesa clang gcc g++ make cmake scons autoconf automake libtool pkg-config meson ninja-build libgtk-3-dev ffmpeg maven
 
+# install rust
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+RUN /root/.cargo/bin/rustup toolchain install 1.88.0 && \
+    /root/.cargo/bin/rustup default 1.88.0
+
+#install node (version configurable via the NodeVersion build-arg; npm is included in the NodeSource nodejs-package)
+RUN curl -fsSL https://deb.nodesource.com/setup_${NodeVersion}.x | bash - && \
+    apt-get install -y nodejs
 
 #install angular-cli
 RUN npm install -g @angular/cli@21.2.13 && \
-    npm install -g @go-task/cli@3.51.1
-
-#install epew
-#TODO install epew
-
-#install scriptcollection
-RUN python3 -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install ${PipIndexUrlArguments} scriptcollection==4.2.105
-
-RUN scdownloadcachabletools -v
+    npm install -g @go-task/cli@3.51.1 && \
+    npm install -g pnpm && \
+    npm install -g typescript && \
+    npm install -g eslint && \
+    npm install -g prettier && \
+    npm install -g vega && \
+    npm install -g vega-cli && \
+    npm install -g vega-lite && \
+    npm install -g vega-embed
 
 #install docker
 RUN install -m 0755 -d /etc/apt/keyrings && \
@@ -77,6 +84,20 @@ RUN dotnet tool install --global GitVersion.Tool --version 6.7.0 && ln -s /root/
     dotnet tool install --global dotnet-t4 --version 3.0.0 && \
     dotnet tool install --global CycloneDX --version 6.2.0 && \
     dotnet tool install --global swashbuckle.aspnetcore.cli --version 10.2.1
+
+#install epew
+#TODO install epew
+
+#install scriptcollection
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+RUN pip install ${PipIndexUrlArguments} scriptcollection==4.2.122
+RUN if [ "${UpgradeScriptCollection}" = "true" ]; then \
+        pip install ${PipIndexUrlArguments} scriptcollection --upgrade; \
+    fi
+
+# download common tools that can be used at runtime
+RUN scdownloadcachabletools -v
 
 #cleanup
 RUN rm -rf /var/lib/apt/lists/*

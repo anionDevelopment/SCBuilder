@@ -7,7 +7,7 @@ from ScriptCollection.TFCPS.Docker.TFCPS_CodeUnitSpecific_Docker import TFCPS_Co
 def build():
     platforms:list[Platform] = [
             Platform.Linux_AMD64,
-#            Platform.Linux_ARM64,
+            #Platform.Linux_ARM64,
     ]
     tf:TFCPS_CodeUnitSpecific_Docker_Functions=TFCPS_CodeUnitSpecific_Docker_CLI.parse(__file__)
     go_version=tf.tfcps_Tools_General.get_dependency_version_in_resources_folder(os.path.join(tf.get_codeunit_folder(),"Other","Resources"),"Go")

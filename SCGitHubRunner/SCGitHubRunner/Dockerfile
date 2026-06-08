@@ -38,7 +38,7 @@ RUN mkdir -p /opt/runner-template && \
     ./bin/installdependencies.sh && \
     rm -rf /var/lib/apt/lists/*
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY EntryPoint.sh /EntryPoint.sh
+RUN chmod +x /EntryPoint.sh
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/EntryPoint.sh"]
