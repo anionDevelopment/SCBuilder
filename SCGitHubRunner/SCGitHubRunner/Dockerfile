@@ -38,7 +38,7 @@ RUN mkdir -p /opt/runner-template && \
     ./bin/installdependencies.sh && \
     rm -rf /var/lib/apt/lists/*
 
-COPY EntryPoint.sh /EntryPoint.sh
+COPY SCGitHubRunner/EntryPoint.sh /EntryPoint.sh
 RUN chmod +x /EntryPoint.sh
 
 ENTRYPOINT ["/EntryPoint.sh"]
