@@ -50,9 +50,8 @@ It may stay empty — on first start the runner-binaries are copied into it from
 ```yaml
 services:
   myrunner:
-    image: aniondev/scgithubrunner:v1.0.0
+    image: aniondev/scgithubrunner:latest
     container_name: myrunner
-    restart: unless-stopped
     environment:
       ORG_NAME: anionDevelopment
       ACCESS_TOKEN: <github-personal-access-token>   # or: RUNNER_TOKEN: <registration-token>
