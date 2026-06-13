@@ -30,9 +30,18 @@ RUN wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod
 ENV PATH="/root/.dotnet/tools:${PATH}"
 
 #install epew
-#TODO install epew:
-#-download Epew.v5.0.18.Productive.Artifacts.zip from the epew-release https://github.com/anionDev/Epew/releases/tag/v5.0.18
-#-in the archive there is "BuildResult_Deb/Epew.deb". Install this deb-file. then remove all downloaded overhead.
+RUN wget https://github.com/anionDev/Epew/releases/download/v5.0.18/Epew.v5.0.18.Productive.Artifacts.zip -O /tmp/epew.zip && \
+    unzip /tmp/epew.zip -d /tmp/epew && \
+    apt-get install -y /tmp/epew/BuildResult_Deb/Epew.deb && \
+    rm -rf /tmp/epew.zip /tmp/epew
+
+#install common tools
+RUN dotnet tool install --global GitVersion.Tool --version 6.7.0 && ln -s /root/.dotnet/tools/dotnet-gitversion /root/.dotnet/tools/gitversion && \
+    dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.5.10 && \
+    dotnet tool install --global docfx --version 2.78.5 && \
+    dotnet tool install --global dotnet-t4 --version 3.0.0 && \
+    dotnet tool install --global CycloneDX --version 6.2.0 && \
+    dotnet tool install --global swashbuckle.aspnetcore.cli --version 10.2.1
 
 # install rust
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
@@ -82,14 +91,6 @@ RUN curl -fsSL https://go.dev/dl/go${GoVersion}.linux-${PlatformForGoVersion}.ta
     && tar -C /usr/local -xzf /tmp/go.tar.gz \
     && rm /tmp/go.tar.gz
 ENV PATH="/usr/local/go/bin:${PATH}"
-
-#install common tools
-RUN dotnet tool install --global GitVersion.Tool --version 6.7.0 && ln -s /root/.dotnet/tools/dotnet-gitversion /root/.dotnet/tools/gitversion && \
-    dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.5.10 && \
-    dotnet tool install --global docfx --version 2.78.5 && \
-    dotnet tool install --global dotnet-t4 --version 3.0.0 && \
-    dotnet tool install --global CycloneDX --version 6.2.0 && \
-    dotnet tool install --global swashbuckle.aspnetcore.cli --version 10.2.1
 
 #install scriptcollection
 RUN python3 -m venv /opt/venv
