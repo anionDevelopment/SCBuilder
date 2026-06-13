@@ -18,7 +18,7 @@ RUN mkdir /Workspace && \
     apt-get update
 
 #install essential tools
-RUN apt-get install -y ca-certificates curl git wget build-essential nano gnupg python3 python3-pip python3-venv openjdk-${JavaVersion}-jdk xz-utils zip unzip libglu1-mesa clang gcc g++ make cmake scons autoconf automake libtool pkg-config meson ninja-build libgtk-3-dev ffmpeg maven
+RUN apt-get install -y ca-certificates curl git wget build-essential nano gnupg python3 python3-pip python3-venv openjdk-${JavaVersion}-jdk xz-utils zip unzip libglu1-mesa clang gcc g++ make cmake scons autoconf automake libtool pkg-config meson ninja-build libgtk-3-dev ffmpeg maven graphviz
 
 # install rust
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
@@ -91,7 +91,7 @@ RUN dotnet tool install --global GitVersion.Tool --version 6.7.0 && ln -s /root/
 #install scriptcollection
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install ${PipIndexUrlArguments} scriptcollection==4.2.122
+RUN pip install ${PipIndexUrlArguments} scriptcollection==4.2.128
 RUN if [ "${UpgradeScriptCollection}" = "true" ]; then \
         pip install ${PipIndexUrlArguments} scriptcollection --upgrade; \
     fi
