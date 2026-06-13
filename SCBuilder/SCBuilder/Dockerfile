@@ -30,7 +30,7 @@ RUN wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod
 ENV PATH="/root/.dotnet/tools:${PATH}"
 
 #install epew
-RUN wget https://github.com/anionDev/Epew/releases/download/v5.0.18/Epew.v5.0.18.Productive.Artifacts.zip -O /tmp/epew.zip && \
+RUN wget https://github.com/anionDevelopment/Epew/releases/download/v5.0.23/Epew.v5.0.23.Productive.Artifacts.zip -O /tmp/epew.zip && \
     unzip /tmp/epew.zip -d /tmp/epew && \
     apt-get install -y /tmp/epew/BuildResult_Deb/Epew.deb && \
     rm -rf /tmp/epew.zip /tmp/epew
