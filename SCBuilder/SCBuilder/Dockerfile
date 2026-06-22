@@ -37,16 +37,6 @@ RUN JAVA_ASSET_VERSION="$(echo "${JavaBuildVersion}" | tr '+' '_')" && \
 ENV JAVA_HOME="/usr/local/java"
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
-#install chromium for headless browser-based frontend-tests (e.g. angular/karma via "ng test --browsers ChromeHeadless")
-RUN apt-get install -y chromium
-#karma launches the chrome-binary directly via the CHROME_BIN environment-variable. Running chromium as root (the default in the
-#build-container) requires --no-sandbox, and the limited /dev/shm in containers requires --disable-dev-shm-usage, so point CHROME_BIN
-#to a wrapper that always adds these flags.
-RUN printf '#!/bin/sh\nexec /usr/bin/chromium --no-sandbox --disable-dev-shm-usage "$@"\n' > /usr/local/bin/chromium-headless && \
-    chmod +x /usr/local/bin/chromium-headless
-ENV CHROME_BIN="/usr/local/bin/chromium-headless"
-
-
 #install dotnet
 RUN wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
     dpkg -i packages-microsoft-prod.deb && \
@@ -104,13 +94,24 @@ RUN install -m 0755 -d /etc/apt/keyrings && \
     apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin && \
     rm -rf /var/lib/apt/lists/*
 
+#install chromium for headless browser-based frontend-tests (e.g. angular/karma via "ng test --browsers ChromeHeadless")
+RUN apt-get install -y chromium
+#karma launches the chrome-binary directly via the CHROME_BIN environment-variable. Running chromium as root (the default in the
+#build-container) requires --no-sandbox, and the limited /dev/shm in containers requires --disable-dev-shm-usage, so point CHROME_BIN
+#to a wrapper that always adds these flags.
+RUN printf '#!/bin/sh\nexec /usr/bin/chromium --no-sandbox --disable-dev-shm-usage "$@"\n' > /usr/local/bin/chromium-headless && \
+    chmod +x /usr/local/bin/chromium-headless
+ENV CHROME_BIN="/usr/local/bin/chromium-headless"
+
 #install flutter
 WORKDIR /Workspace/Tools
 RUN git clone https://github.com/flutter/flutter.git -b stable --depth 1
 ENV PATH="/Workspace/Tools/flutter/bin:/Workspace/Tools/flutter/bin/cache/dart-sdk/bin:${PATH}"
 RUN flutter doctor -v && \
     flutter precache && \
-    flutter config --enable-linux-desktop
+    flutter config --enable-linux-desktop && \
+    flutter config --no-analytics && \
+    dart --disable-analytics
 
 #install go
 RUN curl -fsSL https://go.dev/dl/go${GoVersion}.linux-${PlatformForGoVersion}.tar.gz -o /tmp/go.tar.gz \
