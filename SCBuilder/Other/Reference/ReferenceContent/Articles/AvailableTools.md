@@ -14,7 +14,7 @@ The image installs the following Debian packages:
 - python3
 - python3-pip
 - python3-venv
-- openjdk-21-jdk
+- java
 - nodejs
 - npm
 - unzip
@@ -64,7 +64,7 @@ Global dotnet tools:
 
 The Dockerfile runs `scdownloadcachabletools`.
 This installs additional cacheable tools provided by ScriptCollection. The exact set depends on the ScriptCollection implementation/version.
-See [according documentation in ScriptCollection](https://github.com/anionDev/ScriptCollection/blob/main/ScriptCollection/Other/Reference/ReferenceContent/Articles/DownloadableTools.md).
+See [according documentation in ScriptCollection](https://github.com/anionDevelopment/ScriptCollection/blob/main/ScriptCollection/Other/Reference/ReferenceContent/Articles/DownloadableTools.md).
 
 ## Additional language tooling
 

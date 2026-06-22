@@ -6,6 +6,11 @@ ARG PipIndexUrlArguments
 ARG GoVersion
 ARG PlatformForGoVersion
 ARG JavaVersion=21
+# Exact Java-build installed as the system-JDK. Keep this in sync with ScriptCollection's __default_pinned_jre_version so
+# the system-java matches the (pinned) JRE that ScriptCollection uses to render the PlantUML-diagrams.
+ARG JavaBuildVersion=21.0.6+7
+# Temurin-architecture-token for the platform the image is built for (x64 or aarch64).
+ARG PlatformForJavaVersion=x64
 ARG NodeVersion=22
 ARG UpgradeScriptCollection=false
 LABEL version=${CodeUnitVersion}
@@ -18,7 +23,28 @@ RUN mkdir /Workspace && \
     apt-get update
 
 #install essential tools
-RUN apt-get install -y ca-certificates curl git wget build-essential nano gnupg python3 python3-pip python3-venv openjdk-${JavaVersion}-jdk xz-utils zip unzip libglu1-mesa clang gcc g++ make cmake scons autoconf automake libtool pkg-config meson ninja-build libgtk-3-dev ffmpeg maven graphviz fonts-dejavu
+RUN apt-get install -y ca-certificates curl git wget build-essential nano gnupg python3 python3-pip python3-venv xz-utils zip unzip libglu1-mesa clang gcc g++ make cmake scons autoconf automake libtool pkg-config meson ninja-build libgtk-3-dev ffmpeg maven graphviz fonts-dejavu
+
+#install java (Eclipse-Temurin). Installed from the Temurin-tarball (like Go) instead of the Debian-openjdk-apt-package so
+#the exact build can be pinned. This is the system-JDK used by maven and other JVM-tooling; the PlantUML-diagram-rendering
+#uses the (identical) JRE that ScriptCollection manages in its global cache. The build is pinned to match
+#ScriptCollection's __default_pinned_jre_version.
+RUN JAVA_ASSET_VERSION="$(echo "${JavaBuildVersion}" | tr '+' '_')" && \
+    curl -fsSL "https://github.com/adoptium/temurin${JavaVersion}-binaries/releases/download/jdk-${JavaBuildVersion}/OpenJDK${JavaVersion}U-jdk_${PlatformForJavaVersion}_linux_hotspot_${JAVA_ASSET_VERSION}.tar.gz" -o /tmp/java.tar.gz && \
+    mkdir -p /usr/local/java && \
+    tar -C /usr/local/java --strip-components=1 -xzf /tmp/java.tar.gz && \
+    rm /tmp/java.tar.gz
+ENV JAVA_HOME="/usr/local/java"
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
+
+#install chromium for headless browser-based frontend-tests (e.g. angular/karma via "ng test --browsers ChromeHeadless")
+RUN apt-get install -y chromium
+#karma launches the chrome-binary directly via the CHROME_BIN environment-variable. Running chromium as root (the default in the
+#build-container) requires --no-sandbox, and the limited /dev/shm in containers requires --disable-dev-shm-usage, so point CHROME_BIN
+#to a wrapper that always adds these flags.
+RUN printf '#!/bin/sh\nexec /usr/bin/chromium --no-sandbox --disable-dev-shm-usage "$@"\n' > /usr/local/bin/chromium-headless && \
+    chmod +x /usr/local/bin/chromium-headless
+ENV CHROME_BIN="/usr/local/bin/chromium-headless"
 
 
 #install dotnet
@@ -30,7 +56,7 @@ RUN wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod
 ENV PATH="/root/.dotnet/tools:${PATH}"
 
 #install epew
-RUN wget https://github.com/anionDevelopment/Epew/releases/download/v5.0.23/Epew.v5.0.23.Productive.Artifacts.zip -O /tmp/epew.zip && \
+RUN wget https://github.com/anionDevelopment/Epew/releases/download/v5.0.23/Epew.v5.0.23.Artifacts.zip -O /tmp/epew.zip && \
     unzip /tmp/epew.zip -d /tmp/epew && \
     apt-get install -y /tmp/epew/BuildResult_Deb/Epew.deb && \
     rm -rf /tmp/epew.zip /tmp/epew
@@ -96,7 +122,7 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 #install scriptcollection
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install ${PipIndexUrlArguments} scriptcollection==4.2.134
+RUN pip install ${PipIndexUrlArguments} scriptcollection==4.2.139
 RUN if [ "${UpgradeScriptCollection}" = "true" ]; then \
         pip install ${PipIndexUrlArguments} scriptcollection --upgrade; \
     fi
