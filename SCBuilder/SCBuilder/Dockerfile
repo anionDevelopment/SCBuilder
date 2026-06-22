@@ -122,10 +122,7 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 #install scriptcollection
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install ${PipIndexUrlArguments} scriptcollection==4.2.139
-RUN if [ "${UpgradeScriptCollection}" = "true" ]; then \
-        pip install ${PipIndexUrlArguments} scriptcollection --upgrade; \
-    fi
+RUN pip install ${PipIndexUrlArguments} scriptcollection==4.2.146
 
 # download common tools that can be used at runtime
 RUN scdownloadcachabletools -v
