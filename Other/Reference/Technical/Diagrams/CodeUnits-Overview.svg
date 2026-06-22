@@ -1,34 +1,33 @@
 <?xml version='1.0' encoding='utf-8'?>
-<ns0:svg xmlns:ns0="http://www.w3.org/2000/svg" contentStyleType="text/css" data-diagram-type="DESCRIPTION" height="186px" preserveAspectRatio="none" style="width:1252px;height:186px;background:#FFFFFF;" version="1.1" viewBox="0 0 1252 186" width="1252px" zoomAndPan="magnify">
-  <ns0:title>CodeUnits of SCBuilder</ns0:title>
+<ns0:svg xmlns:ns0="http://www.w3.org/2000/svg" contentStyleType="text/css" data-diagram-type="DESCRIPTION" height="190px" preserveAspectRatio="none" style="width:1418px;height:190px;background:#FFFFFF;" version="1.1" viewBox="0 0 1418 190" width="1418px" zoomAndPan="magnify">
   <ns0:defs />
   <ns0:g>
-    <ns0:g class="title" data-source-line="1">
-      <ns0:text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="158.6689" x="539.7314" y="24.5332">CodeUnits of SCBuilder</ns0:text>
+    <ns0:g class="title" data-source-line="2">
+      <ns0:text fill="#000000" font-family="'DejaVu Sans'" font-size="14" font-weight="700" lengthAdjust="spacing" textLength="183.0391" x="614.1035" y="22.9951">CodeUnits of SCBuilder</ns0:text>
     </ns0:g>
-    <ns0:g class="entity" data-entity="SCBuilder" data-source-line="3" data-uid="ent0002" id="entity_SCBuilder">
-      <ns0:rect fill="#F1F1F1" height="47.6094" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="103.0273" x="159.5" y="45.6094" />
-      <ns0:rect fill="#F1F1F1" height="10" style="stroke:#181818;stroke-width:0.5;" width="15" x="242.5273" y="50.6094" />
-      <ns0:rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="240.5273" y="52.6094" />
-      <ns0:rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="240.5273" y="56.6094" />
-      <ns0:text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="63.0273" x="174.5" y="80.1426">SCBuilder</ns0:text>
+    <ns0:g class="entity" data-qualified-name="SCBuilder" data-source-line="4" id="ent0001">
+      <ns0:rect fill="#F1F1F1" height="46.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="108.1748" x="184" y="44.2969" />
+      <ns0:rect fill="#F1F1F1" height="10" style="stroke:#181818;stroke-width:0.5;" width="15" x="272.1748" y="49.2969" />
+      <ns0:rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="270.1748" y="51.2969" />
+      <ns0:rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="270.1748" y="55.2969" />
+      <ns0:text fill="#000000" font-family="'DejaVu Sans'" font-size="14" lengthAdjust="spacing" textLength="68.1748" x="199" y="77.292">SCBuilder</ns0:text>
     </ns0:g>
-    <ns0:g class="entity" data-entity="SCBuilderNote" data-source-line="5" data-uid="ent0003" id="entity_SCBuilderNote">
-      <ns0:path d="M6,153.6094 L6,179.9609 A0,0 0 0 0 6,179.9609 L415.7559,179.9609 A0,0 0 0 0 415.7559,179.9609 L415.7559,163.6094 L405.7559,153.6094 L215,153.6094 L211,94.0894 L207,153.6094 L6,153.6094 A0,0 0 0 0 6,153.6094" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;" />
-      <ns0:path d="M405.7559,153.6094 L405.7559,163.6094 L415.7559,163.6094 L405.7559,153.6094" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;" />
-      <ns0:text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="388.7559" x="12" y="172.1045">SCBuilder is the builder image to get used with the ScriptCollection.</ns0:text>
+    <ns0:g class="entity" data-qualified-name="SCBuilderNote" data-source-line="6" id="ent0002">
+      <ns0:path d="M6,150.2969 L6,175.4297 A0,0 0 0 0 6,175.4297 L469.8633,175.4297 A0,0 0 0 0 469.8633,175.4297 L469.8633,160.2969 L459.8633,150.2969 L242,150.2969 L238,90.4569 L234,150.2969 L6,150.2969 A0,0 0 0 0 6,150.2969" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;" />
+      <ns0:path d="M459.8633,150.2969 L459.8633,160.2969 L469.8633,160.2969 L459.8633,150.2969" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;" />
+      <ns0:text fill="#000000" font-family="'DejaVu Sans'" font-size="13" lengthAdjust="spacing" textLength="442.8633" x="12" y="167.3638">SCBuilder is the builder image to get used with the ScriptCollection.</ns0:text>
     </ns0:g>
-    <ns0:g class="entity" data-entity="SCGitHubRunner" data-source-line="9" data-uid="ent0005" id="entity_SCGitHubRunner">
-      <ns0:rect fill="#F1F1F1" height="47.6094" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="148.9375" x="773.5" y="45.6094" />
-      <ns0:rect fill="#F1F1F1" height="10" style="stroke:#181818;stroke-width:0.5;" width="15" x="902.4375" y="50.6094" />
-      <ns0:rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="900.4375" y="52.6094" />
-      <ns0:rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="900.4375" y="56.6094" />
-      <ns0:text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="108.9375" x="788.5" y="80.1426">SCGitHubRunner</ns0:text>
+    <ns0:g class="entity" data-qualified-name="SCGitHubRunner" data-source-line="10" id="ent0004">
+      <ns0:rect fill="#F1F1F1" height="46.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="157.8926" x="875" y="44.2969" />
+      <ns0:rect fill="#F1F1F1" height="10" style="stroke:#181818;stroke-width:0.5;" width="15" x="1012.8926" y="49.2969" />
+      <ns0:rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="1010.8926" y="51.2969" />
+      <ns0:rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="1010.8926" y="55.2969" />
+      <ns0:text fill="#000000" font-family="'DejaVu Sans'" font-size="14" lengthAdjust="spacing" textLength="117.8926" x="890" y="77.292">SCGitHubRunner</ns0:text>
     </ns0:g>
-    <ns0:g class="entity" data-entity="SCGitHubRunnerNote" data-source-line="11" data-uid="ent0006" id="entity_SCGitHubRunnerNote">
-      <ns0:path d="M451,153.6094 L451,179.9609 A0,0 0 0 0 451,179.9609 L1245.1318,179.9609 A0,0 0 0 0 1245.1318,179.9609 L1245.1318,163.6094 L1235.1318,153.6094 L852,153.6094 L848,94.0894 L844,153.6094 L451,153.6094 A0,0 0 0 0 451,153.6094" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;" />
-      <ns0:path d="M1235.1318,153.6094 L1235.1318,163.6094 L1245.1318,163.6094 L1235.1318,153.6094" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;" />
-      <ns0:text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="773.1318" x="457" y="172.1045">SCGitHubRunner is a slim, self-hosted GitHub-Actions-runner image that starts job-containers and keeps their externals host-identical.</ns0:text>
+    <ns0:g class="entity" data-qualified-name="SCGitHubRunnerNote" data-source-line="12" id="ent0005">
+      <ns0:path d="M505,150.2969 L505,175.4297 A0,0 0 0 0 505,175.4297 L1403.2461,175.4297 A0,0 0 0 0 1403.2461,175.4297 L1403.2461,160.2969 L1393.2461,150.2969 L958,150.2969 L954,90.4569 L950,150.2969 L505,150.2969 A0,0 0 0 0 505,150.2969" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;" />
+      <ns0:path d="M1393.2461,150.2969 L1393.2461,160.2969 L1403.2461,160.2969 L1393.2461,150.2969" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;" />
+      <ns0:text fill="#000000" font-family="'DejaVu Sans'" font-size="13" lengthAdjust="spacing" textLength="877.2461" x="511" y="167.3638">SCGitHubRunner is a slim, self-hosted GitHub-Actions-runner image that starts job-containers and keeps their externals host-identical.</ns0:text>
     </ns0:g>
   </ns0:g>
 </ns0:svg>

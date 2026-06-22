@@ -63,7 +63,8 @@ RUN npm install -g @angular/cli@21.2.13 && \
     npm install -g vega && \
     npm install -g vega-cli && \
     npm install -g vega-lite && \
-    npm install -g vega-embed
+    npm install -g vega-embed && \
+    npm install -g @cyclonedx/cyclonedx-npm
 
 #install docker
 RUN install -m 0755 -d /etc/apt/keyrings && \
