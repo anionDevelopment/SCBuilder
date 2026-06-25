@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools >= 82.0.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sctaskrunnermacos"
+version = "1.2.1"
+description = "SCTaskRunnerMacOS provides an HTTP-server that builds operating-system-bound build-steps (e.g. flutter ios-builds) natively on a macOS-host on behalf of remote clients."
+readme = { file = "ReadMe.md", content-type = "text/markdown" }
+requires-python = ">=3.11"
+authors = [
+    { name = "Marius Göcke", email = "marius.goecke@gmail.com" },
+]
+classifiers = [
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: MacOS :: MacOS X",
+]
+dependencies = [
+    "scriptcollection",
+]
+
+[project.scripts]
+sctaskrunnermacos = "SCTaskRunnerMacOS.SCTaskRunnerMacOSCore:main"
+
+[tool.setuptools]
+zip-safe = false
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["SCTaskRunnerMacOS*"]
+exclude = ["SCTaskRunnerMacOSTests*"]

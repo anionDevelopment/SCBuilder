@@ -3,19 +3,17 @@
     xmlns:cps="https://projects.aniondev.de/PublicProjects/Common/ProjectTemplates/-/tree/main/Conventions/RepositoryStructure/CommonProjectStructure"
     codeunitspecificationversion="2.9.4"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://projects.aniondev.de/PublicProjects/Common/ProjectTemplates/-/raw/v2.9.4/Conventions/RepositoryStructure/CommonProjectStructure/codeunit.xsd" enabled="true">
-    <cps:name>SCGitHubRunner</cps:name>
-    <cps:version>1.2.1</cps:version>
+    <cps:name>SCTaskRunnerWindows</cps:name>
+    <cps:version>1.0.0</cps:version>
     <cps:codeunitownername>Marius Göcke</cps:codeunitownername>
     <cps:codeunitowneremailaddress>marius.goecke@gmail.com</cps:codeunitowneremailaddress>
     <cps:properties codeunithastestablesourcecode="false" codeunithasupdatabledependencies="false"
         throwexceptionifcodeunitfilecannotbevalidated="true" developmentstate="Active development"
-        description="SCGitHubRunner is a slim, self-hosted GitHub-Actions-runner image that starts job-containers and keeps their externals host-identical.">
+        description="SCTaskRunnerWindows provides an HTTP-server that builds operating-system-bound build-steps (e.g. flutter windows-builds) natively on a Windows-host on behalf of remote clients (see ScriptCollection's TFCPS_RemoteBuild).">
         <cps:pipelinedemands>
         </cps:pipelinedemands>
         <cps:updatesettings>
             <cps:ignoreddependencies>
-                <cps:ignoreddependency>cyclonedx-bom</cps:ignoreddependency>
-                <cps:ignoreddependency>lxml</cps:ignoreddependency>
             </cps:ignoreddependencies>
         </cps:updatesettings>
     </cps:properties>
