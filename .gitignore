@@ -3,3 +3,5 @@ CLAUDE.local.md
 .claude/*.lock
 Other/Logs
 __pycache__/
+build/
+*.egg-info/

@@ -123,7 +123,7 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 #install scriptcollection
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir ${PipIndexUrlArguments} scriptcollection==4.3.1
+RUN pip install --no-cache-dir ${PipIndexUrlArguments} scriptcollection==4.3.3
 
 # download common tools that can be used at runtime
 RUN scdownloadcachabletools -v

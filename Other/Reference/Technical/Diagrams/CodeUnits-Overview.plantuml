@@ -2,12 +2,6 @@
 skinparam defaultFontName "DejaVu Sans"
 title CodeUnits of SCBuilder
 
-[SCBuilder]
-note as SCBuilderNote
-  SCBuilder is the builder image to get used with the ScriptCollection.
-end note
-SCBuilder .. SCBuilderNote
-
 [SCGitHubRunner]
 note as SCGitHubRunnerNote
   SCGitHubRunner is a slim, self-hosted GitHub-Actions-runner image that starts job-containers and keeps their externals host-identical.
