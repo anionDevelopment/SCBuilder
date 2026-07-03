@@ -14,6 +14,7 @@ ARG PlatformForJavaVersion=x64
 ARG NodeVersion=22
 ARG UpgradeScriptCollection=false
 LABEL version=${CodeUnitVersion}
+ENV SCBuilderVersion=${CodeUnitVersion}
 ENV ISRUNNINGINCONTAINER="true"
 #TODO make it possible to have an own apt-server for apt-/npm-/pip-packages etc. to get rid of rate limits
 
@@ -123,7 +124,7 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 #install scriptcollection
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir ${PipIndexUrlArguments} scriptcollection==4.3.3
+RUN pip install --no-cache-dir ${PipIndexUrlArguments} scriptcollection==4.3.21
 
 # download common tools that can be used at runtime
 RUN scdownloadcachabletools -v

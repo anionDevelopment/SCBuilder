@@ -1,7 +1,7 @@
 import os
 from ScriptCollection.TFCPS.SCTaskRunnerServer import SCTaskRunnerServer
 
-version = "1.2.2"
+version = "1.2.3"
 __version__ = version
 
 
