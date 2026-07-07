@@ -124,7 +124,7 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 #install scriptcollection
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir ${PipIndexUrlArguments} scriptcollection==4.3.23
+RUN pip install --no-cache-dir ${PipIndexUrlArguments} scriptcollection==4.3.24
 
 # install ai-agents
 RUN npm install -g @anthropic-ai/claude-code && \
