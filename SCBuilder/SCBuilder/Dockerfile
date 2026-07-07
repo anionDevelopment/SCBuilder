@@ -124,7 +124,12 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 #install scriptcollection
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir ${PipIndexUrlArguments} scriptcollection==4.3.21
+RUN pip install --no-cache-dir ${PipIndexUrlArguments} scriptcollection==4.3.23
+
+# install ai-agents
+RUN npm install -g @anthropic-ai/claude-code && \
+    npm install -g @openai/codex && \
+    npm install -g @github/copilot
 
 # download common tools that can be used at runtime
 RUN scdownloadcachabletools -v
