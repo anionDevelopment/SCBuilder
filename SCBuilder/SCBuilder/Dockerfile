@@ -22,7 +22,7 @@ ENV ISRUNNINGINCONTAINER="true"
 RUN mkdir /Workspace && \
     mkdir /Workspace/Tools && \
     apt-get update && \
-    apt-get install -y ca-certificates curl git wget build-essential nano gnupg python3 python3-pip python3-venv xz-utils zip unzip libglu1-mesa clang gcc g++ make cmake scons autoconf automake libtool pkg-config meson ninja-build libgtk-3-dev ffmpeg maven graphviz fonts-dejavu chromium && \
+    apt-get install -y ca-certificates curl git wget build-essential nano gnupg python3 python3-pip python3-venv xz-utils zip unzip libglu1-mesa clang gcc g++ make cmake scons autoconf automake libtool pkg-config meson ninja-build libgtk-3-dev ffmpeg maven graphviz fonts-dejavu && \
     rm -rf /var/lib/apt/lists/*
 
 #install java (Eclipse-Temurin). Installed from the Temurin-tarball (like Go) instead of the Debian-openjdk-apt-package so
@@ -100,9 +100,19 @@ RUN install -m 0755 -d /etc/apt/keyrings && \
 #karma launches the chrome-binary directly via the CHROME_BIN environment-variable. Running chromium as root (the default in the
 #build-container) requires --no-sandbox, and the limited /dev/shm in containers requires --disable-dev-shm-usage, so point CHROME_BIN
 #to a wrapper that always adds these flags.
+#chromium is installed in an own layer with an own apt-update so that a rebuild always picks up the current
+#(security-)version instead of a version from an apt-index which was cached in an earlier layer.
+#the smoke-test afterwards ensures that the installed chromium-build can actually start in a container: broken chromium-builds
+#(for example 150.0.7871.46, which terminated with SIGTRAP directly during the startup) must let the image-build fail
+#instead of letting every frontend-test-run of every consuming repository fail with "Cannot start ChromeHeadless".
+RUN apt-get update && \
+    apt-get install -y chromium && \
+    rm -rf /var/lib/apt/lists/*
 RUN printf '#!/bin/sh\nexec /usr/bin/chromium --no-sandbox --disable-dev-shm-usage "$@"\n' > /usr/local/bin/chromium-headless && \
     chmod +x /usr/local/bin/chromium-headless
 ENV CHROME_BIN="/usr/local/bin/chromium-headless"
+RUN "${CHROME_BIN}" --headless --disable-gpu --no-first-run --user-data-dir=/tmp/chromium-smoketest --dump-dom about:blank > /dev/null && \
+    rm -rf /tmp/chromium-smoketest
 
 #install flutter
 WORKDIR /Workspace/Tools
