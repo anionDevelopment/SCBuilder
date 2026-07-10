@@ -12,6 +12,11 @@ ARG JavaBuildVersion=21.0.6+7
 # Temurin-architecture-token for the platform the image is built for (x64 or aarch64).
 ARG PlatformForJavaVersion=x64
 ARG NodeVersion=22
+# Exact debian-package-version of chromium (used for the headless browser-based frontend-tests). Pinned so that the image
+# always contains a chromium-build which is known to work. Not every published build does: 150.0.7871.46-1~deb13u1 for
+# example terminated with SIGTRAP directly during the startup, which made every karma-testrun fail with
+# "Cannot start ChromeHeadless". Raise this value only to a build which passes the chromium-smoke-test below.
+ARG ChromiumVersion=150.0.7871.100-1~deb13u1
 ARG UpgradeScriptCollection=false
 LABEL version=${CodeUnitVersion}
 ENV SCBuilderVersion=${CodeUnitVersion}
@@ -100,13 +105,17 @@ RUN install -m 0755 -d /etc/apt/keyrings && \
 #karma launches the chrome-binary directly via the CHROME_BIN environment-variable. Running chromium as root (the default in the
 #build-container) requires --no-sandbox, and the limited /dev/shm in containers requires --disable-dev-shm-usage, so point CHROME_BIN
 #to a wrapper that always adds these flags.
-#chromium is installed in an own layer with an own apt-update so that a rebuild always picks up the current
-#(security-)version instead of a version from an apt-index which was cached in an earlier layer.
-#the smoke-test afterwards ensures that the installed chromium-build can actually start in a container: broken chromium-builds
-#(for example 150.0.7871.46, which terminated with SIGTRAP directly during the startup) must let the image-build fail
-#instead of letting every frontend-test-run of every consuming repository fail with "Cannot start ChromeHeadless".
+#chromium is installed in an own layer with an own apt-update so that the pinned version is resolved against a current
+#apt-index instead of against an apt-index which was cached in an earlier layer. the exact version is pinned via the
+#ChromiumVersion-build-argument (see above); chromium-common and chromium-sandbox must be pinned to the same version,
+#otherwise apt installs a newer build of them and chromium fails due to the version-mismatch. the packages are held so
+#that later apt-runs in this image can not replace the pinned build.
+#the smoke-test afterwards ensures that the installed chromium-build can actually start in a container: a broken chromium-build
+#must let the image-build fail instead of letting every frontend-test-run of every consuming repository fail with
+#"Cannot start ChromeHeadless".
 RUN apt-get update && \
-    apt-get install -y chromium && \
+    apt-get install -y chromium=${ChromiumVersion} chromium-common=${ChromiumVersion} chromium-sandbox=${ChromiumVersion} && \
+    apt-mark hold chromium chromium-common chromium-sandbox && \
     rm -rf /var/lib/apt/lists/*
 RUN printf '#!/bin/sh\nexec /usr/bin/chromium --no-sandbox --disable-dev-shm-usage "$@"\n' > /usr/local/bin/chromium-headless && \
     chmod +x /usr/local/bin/chromium-headless
