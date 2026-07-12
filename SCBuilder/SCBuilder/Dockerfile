@@ -27,7 +27,8 @@ ENV ISRUNNINGINCONTAINER="true"
 RUN mkdir /Workspace && \
     mkdir /Workspace/Tools && \
     apt-get update && \
-    apt-get install -y ca-certificates curl git wget build-essential nano gnupg python3 python3-pip python3-venv xz-utils zip unzip libglu1-mesa clang gcc g++ make cmake scons autoconf automake libtool pkg-config meson ninja-build libgtk-3-dev ffmpeg maven graphviz fonts-dejavu && \
+    apt-get install -y ca-certificates curl git wget build-essential nano gnupg python3 python3-pip python3-venv xz-utils zip unzip libglu1-mesa clang gcc g++ make cmake scons autoconf automake libtool pkg-config meson ninja-build libgtk-3-dev ffmpeg maven graphviz fonts-dejavu osslsigncode mono-devel && \
+
     rm -rf /var/lib/apt/lists/*
 
 #install java (Eclipse-Temurin). Installed from the Temurin-tarball (like Go) instead of the Debian-openjdk-apt-package so
