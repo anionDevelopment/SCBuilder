@@ -14,16 +14,16 @@ ARG PlatformForJavaVersion=x64
 ARG NodeVersion=22
 ARG UpgradeScriptCollection=false
 LABEL version=${CodeUnitVersion}
+ENV SCBuilderVersion=${CodeUnitVersion}
 ENV ISRUNNINGINCONTAINER="true"
 #TODO make it possible to have an own apt-server for apt-/npm-/pip-packages etc. to get rid of rate limits
 
-#basic
+#install essential tools
 RUN mkdir /Workspace && \
     mkdir /Workspace/Tools && \
-    apt-get update
-
-#install essential tools
-RUN apt-get install -y ca-certificates curl git wget build-essential nano gnupg python3 python3-pip python3-venv xz-utils zip unzip libglu1-mesa clang gcc g++ make cmake scons autoconf automake libtool pkg-config meson ninja-build libgtk-3-dev ffmpeg maven graphviz fonts-dejavu
+    apt-get update && \
+    apt-get install -y ca-certificates curl git wget build-essential nano gnupg python3 python3-pip python3-venv xz-utils zip unzip libglu1-mesa clang gcc g++ make cmake scons autoconf automake libtool pkg-config meson ninja-build libgtk-3-dev ffmpeg maven graphviz fonts-dejavu chromium && \
+    rm -rf /var/lib/apt/lists/*
 
 #install java (Eclipse-Temurin). Installed from the Temurin-tarball (like Go) instead of the Debian-openjdk-apt-package so
 #the exact build can be pinned. This is the system-JDK used by maven and other JVM-tooling; the PlantUML-diagram-rendering
@@ -37,22 +37,13 @@ RUN JAVA_ASSET_VERSION="$(echo "${JavaBuildVersion}" | tr '+' '_')" && \
 ENV JAVA_HOME="/usr/local/java"
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
-#install chromium for headless browser-based frontend-tests (e.g. angular/karma via "ng test --browsers ChromeHeadless")
-RUN apt-get install -y chromium
-#karma launches the chrome-binary directly via the CHROME_BIN environment-variable. Running chromium as root (the default in the
-#build-container) requires --no-sandbox, and the limited /dev/shm in containers requires --disable-dev-shm-usage, so point CHROME_BIN
-#to a wrapper that always adds these flags.
-RUN printf '#!/bin/sh\nexec /usr/bin/chromium --no-sandbox --disable-dev-shm-usage "$@"\n' > /usr/local/bin/chromium-headless && \
-    chmod +x /usr/local/bin/chromium-headless
-ENV CHROME_BIN="/usr/local/bin/chromium-headless"
-
-
 #install dotnet
 RUN wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
     dpkg -i packages-microsoft-prod.deb && \
     rm packages-microsoft-prod.deb && \
     apt-get update && \
-    apt-get install -y dotnet-sdk-10.0
+    apt-get install -y dotnet-sdk-10.0 && \
+    rm -rf /var/lib/apt/lists/*
 ENV PATH="/root/.dotnet/tools:${PATH}"
 
 #install epew
@@ -77,7 +68,8 @@ RUN /root/.cargo/bin/rustup toolchain install 1.88.0 && \
 
 #install node (version configurable via the NodeVersion build-arg; npm is included in the NodeSource nodejs-package)
 RUN curl -fsSL https://deb.nodesource.com/setup_${NodeVersion}.x | bash - && \
-    apt-get install -y nodejs
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
 
 #install angular-cli
 RUN npm install -g @angular/cli@21.2.13 && \
@@ -104,13 +96,23 @@ RUN install -m 0755 -d /etc/apt/keyrings && \
     apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin && \
     rm -rf /var/lib/apt/lists/*
 
+#setup chromium for headless browser-based frontend-tests (e.g. angular/karma via "ng test --browsers ChromeHeadless").
+#karma launches the chrome-binary directly via the CHROME_BIN environment-variable. Running chromium as root (the default in the
+#build-container) requires --no-sandbox, and the limited /dev/shm in containers requires --disable-dev-shm-usage, so point CHROME_BIN
+#to a wrapper that always adds these flags.
+RUN printf '#!/bin/sh\nexec /usr/bin/chromium --no-sandbox --disable-dev-shm-usage "$@"\n' > /usr/local/bin/chromium-headless && \
+    chmod +x /usr/local/bin/chromium-headless
+ENV CHROME_BIN="/usr/local/bin/chromium-headless"
+
 #install flutter
 WORKDIR /Workspace/Tools
-RUN git clone https://github.com/flutter/flutter.git -b stable --depth 1
 ENV PATH="/Workspace/Tools/flutter/bin:/Workspace/Tools/flutter/bin/cache/dart-sdk/bin:${PATH}"
-RUN flutter doctor -v && \
+RUN git clone https://github.com/flutter/flutter.git -b 3.44.4 --depth 1 && \
+    dart --disable-analytics && \
     flutter precache && \
-    flutter config --enable-linux-desktop
+    flutter config --enable-linux-desktop && \
+    flutter config --no-analytics && \
+    flutter doctor -v
 
 #install go
 RUN curl -fsSL https://go.dev/dl/go${GoVersion}.linux-${PlatformForGoVersion}.tar.gz -o /tmp/go.tar.gz \
@@ -122,13 +124,15 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 #install scriptcollection
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install ${PipIndexUrlArguments} scriptcollection==4.2.146
+RUN pip install --no-cache-dir ${PipIndexUrlArguments} scriptcollection==4.3.24
+
+# install ai-agents
+RUN npm install -g @anthropic-ai/claude-code && \
+    npm install -g @openai/codex && \
+    npm install -g @github/copilot
 
 # download common tools that can be used at runtime
 RUN scdownloadcachabletools -v
-
-#cleanup
-RUN rm -rf /var/lib/apt/lists/*
 
 #set commands
 ENV ISRUNNINGINBUILDCONTAINER="true"

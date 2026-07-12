@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
-<ns0:svg xmlns:ns0="http://www.w3.org/2000/svg" contentStyleType="text/css" data-diagram-type="DESCRIPTION" height="190px" preserveAspectRatio="none" style="width:1418px;height:190px;background:#FFFFFF;" version="1.1" viewBox="0 0 1418 190" width="1418px" zoomAndPan="magnify">
+<ns0:svg xmlns:ns0="http://www.w3.org/2000/svg" contentStyleType="text/css" data-diagram-type="DESCRIPTION" height="190px" preserveAspectRatio="none" style="width:4411px;height:190px;background:#FFFFFF;" version="1.1" viewBox="0 0 4411 190" width="4411px" zoomAndPan="magnify">
   <ns0:defs />
   <ns0:g>
     <ns0:g class="title" data-source-line="2">
-      <ns0:text fill="#000000" font-family="'DejaVu Sans'" font-size="14" font-weight="700" lengthAdjust="spacing" textLength="183.0391" x="614.1035" y="22.9951">CodeUnits of SCBuilder</ns0:text>
+      <ns0:text fill="#000000" font-family="'DejaVu Sans'" font-size="14" font-weight="700" lengthAdjust="spacing" textLength="183.0391" x="2110.7571" y="22.9951">CodeUnits of SCBuilder</ns0:text>
     </ns0:g>
     <ns0:g class="entity" data-qualified-name="SCBuilder" data-source-line="4" id="ent0001">
       <ns0:rect fill="#F1F1F1" height="46.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="108.1748" x="184" y="44.2969" />
@@ -28,6 +28,30 @@
       <ns0:path d="M505,150.2969 L505,175.4297 A0,0 0 0 0 505,175.4297 L1403.2461,175.4297 A0,0 0 0 0 1403.2461,175.4297 L1403.2461,160.2969 L1393.2461,150.2969 L958,150.2969 L954,90.4569 L950,150.2969 L505,150.2969 A0,0 0 0 0 505,150.2969" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;" />
       <ns0:path d="M1393.2461,150.2969 L1393.2461,160.2969 L1403.2461,160.2969 L1393.2461,150.2969" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;" />
       <ns0:text fill="#000000" font-family="'DejaVu Sans'" font-size="13" lengthAdjust="spacing" textLength="877.2461" x="511" y="167.3638">SCGitHubRunner is a slim, self-hosted GitHub-Actions-runner image that starts job-containers and keeps their externals host-identical.</ns0:text>
+    </ns0:g>
+    <ns0:g class="entity" data-qualified-name="SCTaskRunnerMacOS" data-source-line="16" id="ent0007">
+      <ns0:rect fill="#F1F1F1" height="46.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="190.1719" x="2058" y="44.2969" />
+      <ns0:rect fill="#F1F1F1" height="10" style="stroke:#181818;stroke-width:0.5;" width="15" x="2228.1719" y="49.2969" />
+      <ns0:rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="2226.1719" y="51.2969" />
+      <ns0:rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="2226.1719" y="55.2969" />
+      <ns0:text fill="#000000" font-family="'DejaVu Sans'" font-size="14" lengthAdjust="spacing" textLength="150.1719" x="2073" y="77.292">SCTaskRunnerMacOS</ns0:text>
+    </ns0:g>
+    <ns0:g class="entity" data-qualified-name="SCTaskRunnerMacOSNote" data-source-line="18" id="ent0008">
+      <ns0:path d="M1438,150.2969 L1438,175.4297 A0,0 0 0 0 1438,175.4297 L2867.7417,175.4297 A0,0 0 0 0 2867.7417,175.4297 L2867.7417,160.2969 L2857.7417,150.2969 L2157,150.2969 L2153,90.4569 L2149,150.2969 L1438,150.2969 A0,0 0 0 0 1438,150.2969" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;" />
+      <ns0:path d="M2857.7417,150.2969 L2857.7417,160.2969 L2867.7417,160.2969 L2857.7417,150.2969" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;" />
+      <ns0:text fill="#000000" font-family="'DejaVu Sans'" font-size="13" lengthAdjust="spacing" textLength="1408.7417" x="1444" y="167.3638">SCTaskRunnerMacOS provides an HTTP-server that builds operating-system-bound build-steps (e.g. flutter ios-builds) natively on a macOS-host on behalf of remote clients (see ScriptCollection's TFCPS_RemoteBuild).</ns0:text>
+    </ns0:g>
+    <ns0:g class="entity" data-qualified-name="SCTaskRunnerWindows" data-source-line="22" id="ent0010">
+      <ns0:rect fill="#F1F1F1" height="46.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="204.7119" x="3547.5" y="44.2969" />
+      <ns0:rect fill="#F1F1F1" height="10" style="stroke:#181818;stroke-width:0.5;" width="15" x="3732.2119" y="49.2969" />
+      <ns0:rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="3730.2119" y="51.2969" />
+      <ns0:rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="3730.2119" y="55.2969" />
+      <ns0:text fill="#000000" font-family="'DejaVu Sans'" font-size="14" lengthAdjust="spacing" textLength="164.7119" x="3562.5" y="77.292">SCTaskRunnerWindows</ns0:text>
+    </ns0:g>
+    <ns0:g class="entity" data-qualified-name="SCTaskRunnerWindowsNote" data-source-line="24" id="ent0011">
+      <ns0:path d="M2903.5,150.2969 L2903.5,175.4297 A0,0 0 0 0 2903.5,175.4297 L4396.5532,175.4297 A0,0 0 0 0 4396.5532,175.4297 L4396.5532,160.2969 L4386.5532,150.2969 L3654,150.2969 L3650,90.4569 L3646,150.2969 L2903.5,150.2969 A0,0 0 0 0 2903.5,150.2969" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;" />
+      <ns0:path d="M4386.5532,150.2969 L4386.5532,160.2969 L4396.5532,160.2969 L4386.5532,150.2969" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;" />
+      <ns0:text fill="#000000" font-family="'DejaVu Sans'" font-size="13" lengthAdjust="spacing" textLength="1472.0532" x="2909.5" y="167.3638">SCTaskRunnerWindows provides an HTTP-server that builds operating-system-bound build-steps (e.g. flutter windows-builds) natively on a Windows-host on behalf of remote clients (see ScriptCollection's TFCPS_RemoteBuild).</ns0:text>
     </ns0:g>
   </ns0:g>
 </ns0:svg>

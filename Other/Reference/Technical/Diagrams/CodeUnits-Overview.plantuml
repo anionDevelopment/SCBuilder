@@ -14,5 +14,17 @@ note as SCGitHubRunnerNote
 end note
 SCGitHubRunner .. SCGitHubRunnerNote
 
+[SCTaskRunnerMacOS]
+note as SCTaskRunnerMacOSNote
+  SCTaskRunnerMacOS provides an HTTP-server that builds operating-system-bound build-steps (e.g. flutter ios-builds) natively on a macOS-host on behalf of remote clients (see ScriptCollection's TFCPS_RemoteBuild).
+end note
+SCTaskRunnerMacOS .. SCTaskRunnerMacOSNote
+
+[SCTaskRunnerWindows]
+note as SCTaskRunnerWindowsNote
+  SCTaskRunnerWindows provides an HTTP-server that builds operating-system-bound build-steps (e.g. flutter windows-builds) natively on a Windows-host on behalf of remote clients (see ScriptCollection's TFCPS_RemoteBuild).
+end note
+SCTaskRunnerWindows .. SCTaskRunnerWindowsNote
+
 
 @enduml
