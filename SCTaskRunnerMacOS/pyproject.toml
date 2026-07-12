@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sctaskrunnermacos"
-version = "1.2.4"
+version = "1.2.5"
 description = "SCTaskRunnerMacOS provides an HTTP-server that builds operating-system-bound build-steps (e.g. flutter ios-builds) natively on a macOS-host on behalf of remote clients."
 readme = { file = "ReadMe.md", content-type = "text/markdown" }
 requires-python = ">=3.11"
