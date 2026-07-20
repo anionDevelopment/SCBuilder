@@ -42,6 +42,7 @@ RUN JAVA_ASSET_VERSION="$(echo "${JavaBuildVersion}" | tr '+' '_')" && \
     rm /tmp/java.tar.gz
 ENV JAVA_HOME="/usr/local/java"
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
+ENV ISRUNNINGINBUILDCONTAINER="true"
 
 #install dotnet
 RUN wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
@@ -144,7 +145,7 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 #install scriptcollection
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir ${PipIndexUrlArguments} scriptcollection==4.3.24
+RUN pip install --no-cache-dir ${PipIndexUrlArguments} scriptcollection==4.3.50
 
 # install ai-agents
 RUN npm install -g @anthropic-ai/claude-code && \
@@ -153,6 +154,3 @@ RUN npm install -g @anthropic-ai/claude-code && \
 
 # download common tools that can be used at runtime
 RUN scdownloadcachabletools -v
-
-#set commands
-ENV ISRUNNINGINBUILDCONTAINER="true"
