@@ -1,12 +1,13 @@
 name: buildpipeline
 on:
-  push:
-    branches:
-      - main
-      - other/next-release
   workflow_dispatch:
+    inputs:
+      TargetEnvironmentType:
+        description: "Target environment-type for the build (e.g. QualityCheck, Productive)."
+        required: false
+        default: QualityCheck
 jobs:
-  run-script:
+  build-pipeline:
     runs-on: [self-hosted, scriptcollection]
     container:
       image: aniondev/scbuilder:latest
@@ -17,16 +18,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Update scriptcollection
+        run: pip3 install scriptcollection --upgrade
       - name: Prepare build-pipeline
-        run: scpreparebuildpipelineforgitlab
+        run: scpreparebuildpipelineforgithub
       - name: Build codeunits
-        run: scbuildcodeunits -v 4
+        run: scbuildcodeunits --assertnonewchanges --verbosity 4 --targetenvironment "${{ inputs.TargetEnvironmentType }}"
       - name: Upload artifacts
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: artifacts
-          path: |
-            SCBuilder/Other/Artifacts
-            SCGitHubRunner/Other/Artifacts
+          path: Other/Resources/Artifacts
           if-no-files-found: error

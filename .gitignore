@@ -5,3 +5,5 @@ Other/Logs
 __pycache__/
 build/
 *.egg-info/
+
+Other/Resources/Artifacts
