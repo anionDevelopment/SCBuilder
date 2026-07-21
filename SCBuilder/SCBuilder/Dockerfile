@@ -21,6 +21,7 @@ ARG UpgradeScriptCollection=false
 LABEL version=${CodeUnitVersion}
 ENV SCBuilderVersion=${CodeUnitVersion}
 ENV ISRUNNINGINCONTAINER="true"
+ENV IS_SANDBOX="1"
 #TODO make it possible to have an own apt-server for apt-/npm-/pip-packages etc. to get rid of rate limits
 
 #install essential tools
