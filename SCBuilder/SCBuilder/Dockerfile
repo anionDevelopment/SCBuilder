@@ -5,18 +5,50 @@ ARG DotNetRuntime
 ARG PipIndexUrlArguments
 ARG GoVersion
 ARG PlatformForGoVersion
-ARG JavaVersion=21
-# Exact Java-build installed as the system-JDK. Keep this in sync with ScriptCollection's __default_pinned_jre_version so
-# the system-java matches the (pinned) JRE that ScriptCollection uses to render the PlantUML-diagrams.
-ARG JavaBuildVersion=21.0.6+7
+# System-JDK: the exact build (JavaBuildVersion, e.g. "21.0.6+7") and its major (JavaVersion, e.g. "21") are both passed in
+# by Other/Build/Build.py from Other/Resources/Dependencies/JRE/Version.txt. That is the same JRE-pin ScriptCollection reads
+# to render the PlantUML-diagrams, so the system-java matches that JRE automatically. Change it in that Version.txt.
+ARG JavaVersion
+ARG JavaBuildVersion
 # Temurin-architecture-token for the platform the image is built for (x64 or aarch64).
 ARG PlatformForJavaVersion=x64
-ARG NodeVersion=22
-# Exact debian-package-version of chromium (used for the headless browser-based frontend-tests). Pinned so that the image
-# always contains a chromium-build which is known to work. Not every published build does: 150.0.7871.46-1~deb13u1 for
-# example terminated with SIGTRAP directly during the startup, which made every karma-testrun fail with
-# "Cannot start ChromeHeadless". Raise this value only to a build which passes the chromium-smoke-test below.
-ARG ChromiumVersion=150.0.7871.100-1~deb13u1
+# Node major-version, passed in from Other/Resources/Dependencies/Node/Version.txt.
+ARG NodeVersion
+# Exact debian-package-version of chromium (used for the headless browser-based frontend-tests), passed in from
+# Other/Resources/Dependencies/Chromium/Version.txt. Pinned so that the image always contains a chromium-build which is
+# known to work. Not every published build does: 150.0.7871.46-1~deb13u1 for example terminated with SIGTRAP directly
+# during the startup, which made every karma-testrun fail with "Cannot start ChromeHeadless". Raise this value in that
+# Version.txt only to a build which passes the chromium-smoke-test below.
+ARG ChromiumVersion
+# tool-versions: the values are passed in by the build (Other/Build/Build.py) from the corresponding
+# Other/Resources/Dependencies/<Tool>/Version.txt-file, analog to GoVersion above. Change a version by editing that
+# Version.txt-file, not here. DotNetSdkVersion is the dotnet feature-band (installed from the rolling microsoft-apt-repo),
+# not an exact patch-pin.
+ARG DotNetSdkVersion
+ARG EpewVersion
+ARG GitVersionToolVersion
+ARG ReportGeneratorVersion
+ARG DocFxVersion
+ARG DotNetT4Version
+ARG CycloneDxVersion
+ARG SwashbuckleVersion
+ARG RustVersion
+ARG AngularCliVersion
+ARG GoTaskVersion
+ARG PnpmVersion
+ARG TypeScriptVersion
+ARG EslintVersion
+ARG PrettierVersion
+ARG VegaVersion
+ARG VegaCliVersion
+ARG VegaLiteVersion
+ARG VegaEmbedVersion
+ARG CycloneDxNpmVersion
+ARG FlutterVersion
+ARG ScriptCollectionVersion
+ARG ClaudeCodeVersion
+ARG CodexVersion
+ARG CopilotVersion
 ARG UpgradeScriptCollection=false
 LABEL version=${CodeUnitVersion}
 ENV SCBuilderVersion=${CodeUnitVersion}
@@ -29,7 +61,6 @@ RUN mkdir /Workspace && \
     mkdir /Workspace/Tools && \
     apt-get update && \
     apt-get install -y ca-certificates curl git wget build-essential nano gnupg python3 python3-pip python3-venv xz-utils zip unzip libglu1-mesa clang gcc g++ make cmake scons autoconf automake libtool pkg-config meson ninja-build libgtk-3-dev ffmpeg maven graphviz fonts-dejavu osslsigncode mono-devel && \
-
     rm -rf /var/lib/apt/lists/*
 
 #install java (Eclipse-Temurin). Installed from the Temurin-tarball (like Go) instead of the Debian-openjdk-apt-package so
@@ -50,29 +81,29 @@ RUN wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod
     dpkg -i packages-microsoft-prod.deb && \
     rm packages-microsoft-prod.deb && \
     apt-get update && \
-    apt-get install -y dotnet-sdk-10.0 && \
+    apt-get install -y dotnet-sdk-${DotNetSdkVersion} && \
     rm -rf /var/lib/apt/lists/*
 ENV PATH="/root/.dotnet/tools:${PATH}"
 
 #install epew
-RUN wget https://github.com/anionDevelopment/Epew/releases/download/v5.0.23/Epew.v5.0.23.Artifacts.zip -O /tmp/epew.zip && \
+RUN wget https://github.com/anionDevelopment/Epew/releases/download/v${EpewVersion}/Epew.v${EpewVersion}.Artifacts.zip -O /tmp/epew.zip && \
     unzip /tmp/epew.zip -d /tmp/epew && \
     apt-get install -y /tmp/epew/BuildResult_Deb/Epew.deb && \
     rm -rf /tmp/epew.zip /tmp/epew
 
 #install common tools
-RUN dotnet tool install --global GitVersion.Tool --version 6.7.0 && ln -s /root/.dotnet/tools/dotnet-gitversion /root/.dotnet/tools/gitversion && \
-    dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.5.10 && \
-    dotnet tool install --global docfx --version 2.78.5 && \
-    dotnet tool install --global dotnet-t4 --version 3.0.0 && \
-    dotnet tool install --global CycloneDX --version 6.2.0 && \
-    dotnet tool install --global swashbuckle.aspnetcore.cli --version 10.2.1
+RUN dotnet tool install --global GitVersion.Tool --version ${GitVersionToolVersion} && ln -s /root/.dotnet/tools/dotnet-gitversion /root/.dotnet/tools/gitversion && \
+    dotnet tool install --global dotnet-reportgenerator-globaltool --version ${ReportGeneratorVersion} && \
+    dotnet tool install --global docfx --version ${DocFxVersion} && \
+    dotnet tool install --global dotnet-t4 --version ${DotNetT4Version} && \
+    dotnet tool install --global CycloneDX --version ${CycloneDxVersion} && \
+    dotnet tool install --global swashbuckle.aspnetcore.cli --version ${SwashbuckleVersion}
 
 # install rust
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
-RUN /root/.cargo/bin/rustup toolchain install 1.88.0 && \
-    /root/.cargo/bin/rustup default 1.88.0
+RUN /root/.cargo/bin/rustup toolchain install ${RustVersion} && \
+    /root/.cargo/bin/rustup default ${RustVersion}
 
 #install node (version configurable via the NodeVersion build-arg; npm is included in the NodeSource nodejs-package)
 RUN curl -fsSL https://deb.nodesource.com/setup_${NodeVersion}.x | bash - && \
@@ -80,17 +111,17 @@ RUN curl -fsSL https://deb.nodesource.com/setup_${NodeVersion}.x | bash - && \
     rm -rf /var/lib/apt/lists/*
 
 #install angular-cli
-RUN npm install -g @angular/cli@21.2.13 && \
-    npm install -g @go-task/cli@3.51.1 && \
-    npm install -g pnpm && \
-    npm install -g typescript && \
-    npm install -g eslint && \
-    npm install -g prettier && \
-    npm install -g vega && \
-    npm install -g vega-cli && \
-    npm install -g vega-lite && \
-    npm install -g vega-embed && \
-    npm install -g @cyclonedx/cyclonedx-npm
+RUN npm install -g @angular/cli@${AngularCliVersion} && \
+    npm install -g @go-task/cli@${GoTaskVersion} && \
+    npm install -g pnpm@${PnpmVersion} && \
+    npm install -g typescript@${TypeScriptVersion} && \
+    npm install -g eslint@${EslintVersion} && \
+    npm install -g prettier@${PrettierVersion} && \
+    npm install -g vega@${VegaVersion} && \
+    npm install -g vega-cli@${VegaCliVersion} && \
+    npm install -g vega-lite@${VegaLiteVersion} && \
+    npm install -g vega-embed@${VegaEmbedVersion} && \
+    npm install -g @cyclonedx/cyclonedx-npm@${CycloneDxNpmVersion}
 
 #install docker
 RUN install -m 0755 -d /etc/apt/keyrings && \
@@ -129,7 +160,7 @@ RUN "${CHROME_BIN}" --headless --disable-gpu --no-first-run --user-data-dir=/tmp
 #install flutter
 WORKDIR /Workspace/Tools
 ENV PATH="/Workspace/Tools/flutter/bin:/Workspace/Tools/flutter/bin/cache/dart-sdk/bin:${PATH}"
-RUN git clone https://github.com/flutter/flutter.git -b 3.44.4 --depth 1 && \
+RUN git clone https://github.com/flutter/flutter.git -b ${FlutterVersion} --depth 1 && \
     dart --disable-analytics && \
     flutter precache && \
     flutter config --enable-linux-desktop && \
@@ -146,12 +177,12 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 #install scriptcollection
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir ${PipIndexUrlArguments} scriptcollection==4.3.50
+RUN pip install --no-cache-dir ${PipIndexUrlArguments} scriptcollection==${ScriptCollectionVersion}
 
 # install ai-agents
-RUN npm install -g @anthropic-ai/claude-code && \
-    npm install -g @openai/codex && \
-    npm install -g @github/copilot
+RUN npm install -g @anthropic-ai/claude-code@${ClaudeCodeVersion} && \
+    npm install -g @openai/codex@${CodexVersion} && \
+    npm install -g @github/copilot@${CopilotVersion}
 
 # download common tools that can be used at runtime
 RUN scdownloadcachabletools -v
