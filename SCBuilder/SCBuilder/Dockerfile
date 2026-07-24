@@ -103,6 +103,11 @@ RUN install -m 0755 -d /etc/apt/keyrings && \
     apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin && \
     rm -rf /var/lib/apt/lists/*
 
+#copy entrypoint (ensures a multi-platform-capable buildx builder is available, see EntryPoint.sh, before running the
+#actual command)
+COPY SCBuilder/EntryPoint.sh /usr/local/bin/EntryPoint.sh
+RUN chmod +x /usr/local/bin/EntryPoint.sh
+
 #setup chromium for headless browser-based frontend-tests (e.g. angular/karma via "ng test --browsers ChromeHeadless").
 #karma launches the chrome-binary directly via the CHROME_BIN environment-variable. Running chromium as root (the default in the
 #build-container) requires --no-sandbox, and the limited /dev/shm in containers requires --disable-dev-shm-usage, so point CHROME_BIN
@@ -145,12 +150,16 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 #install scriptcollection
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir ${PipIndexUrlArguments} scriptcollection==4.3.50
+RUN pip install --no-cache-dir ${PipIndexUrlArguments} scriptcollection==4.3.52
 
 # install ai-agents
 RUN npm install -g @anthropic-ai/claude-code && \
     npm install -g @openai/codex && \
-    npm install -g @github/copilot
+    npm install -g @github/copilot && \
+    npm install -g @google/gemini-cli && \
+    curl -fsSL https://opencode.ai/install | bash
 
 # download common tools that can be used at runtime
 RUN scdownloadcachabletools -v
+
+ENTRYPOINT ["/usr/local/bin/EntryPoint.sh"]
