@@ -49,6 +49,7 @@ def build():
         "ClaudeCodeVersion":dependency_version("ClaudeCode"),
         "CodexVersion":dependency_version("Codex"),
         "CopilotVersion":dependency_version("Copilot"),
+        "OpenSpecVersion":dependency_version("OpenSpec"),
     }
     tf.build(platforms,build_arguments)
     #TODO add sboms

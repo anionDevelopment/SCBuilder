@@ -49,6 +49,7 @@ ARG ScriptCollectionVersion
 ARG ClaudeCodeVersion
 ARG CodexVersion
 ARG CopilotVersion
+ARG OpenSpec
 ARG UpgradeScriptCollection=false
 LABEL version=${CodeUnitVersion}
 ENV SCBuilderVersion=${CodeUnitVersion}
@@ -179,10 +180,10 @@ RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir ${PipIndexUrlArguments} scriptcollection==${ScriptCollectionVersion}
 
-# install ai-agents
+# install ai-related things
 RUN npm install -g @anthropic-ai/claude-code@${ClaudeCodeVersion} && \
     npm install -g @openai/codex@${CodexVersion} && \
-    npm install -g @github/copilot@${CopilotVersion}
-
+    npm install -g @github/copilot@${CopilotVersion} && \
+    npm install -g @fission-ai/openspec@${OpenSpecVersion}
 # download common tools that can be used at runtime
 RUN scdownloadcachabletools -v
