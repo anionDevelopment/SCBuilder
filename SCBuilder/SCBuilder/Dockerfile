@@ -49,6 +49,7 @@ ARG ScriptCollectionVersion
 ARG ClaudeCodeVersion
 ARG CodexVersion
 ARG CopilotVersion
+ARG OpenSpec
 ARG UpgradeScriptCollection=false
 LABEL version=${CodeUnitVersion}
 ENV SCBuilderVersion=${CodeUnitVersion}
@@ -186,8 +187,14 @@ RUN pip install --no-cache-dir ${PipIndexUrlArguments} scriptcollection==${Scrip
 
 RUN npm install -g @anthropic-ai/claude-code && \
     npm install -g @openai/codex && \
-    npm install -g @github/copilot && \
+    npm install -g @github/copilot
+
+# install ai-related things
+RUN npm install -g @anthropic-ai/claude-code@${ClaudeCodeVersion} && \
+    npm install -g @openai/codex@${CodexVersion} && \
+    npm install -g @github/copilot@${CopilotVersion} && \
     npm install -g @google/gemini-cli && \
+    npm install -g @fission-ai/openspec@${OpenSpecVersion} && \
     curl -fsSL https://opencode.ai/install | bash
 
 # download common tools that can be used at runtime
