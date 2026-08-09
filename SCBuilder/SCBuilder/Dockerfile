@@ -44,12 +44,26 @@ ARG VegaCliVersion
 ARG VegaLiteVersion
 ARG VegaEmbedVersion
 ARG CycloneDxNpmVersion
+ARG PlaywrightVersion
+ARG GulpCliVersion
+ARG JqVersion
+ARG YqVersion
+ARG ShellCheckVersion
+ARG GitLfsVersion
+ARG GitHubCliVersion
+ARG GitLabCliVersion
+ARG KubectlVersion
+ARG HelmVersion
+ARG KustomizeVersion
+ARG AzureCliVersion
 ARG FlutterVersion
 ARG ScriptCollectionVersion
 ARG ClaudeCodeVersion
 ARG CodexVersion
 ARG CopilotVersion
-ARG OpenSpec
+ARG GeminiCliVersion
+ARG OpenSpecVersion
+ARG OpenCodeVersion
 ARG UpgradeScriptCollection=false
 LABEL version=${CodeUnitVersion}
 ENV SCBuilderVersion=${CodeUnitVersion}
@@ -122,7 +136,8 @@ RUN npm install -g @angular/cli@${AngularCliVersion} && \
     npm install -g vega-cli@${VegaCliVersion} && \
     npm install -g vega-lite@${VegaLiteVersion} && \
     npm install -g vega-embed@${VegaEmbedVersion} && \
-    npm install -g @cyclonedx/cyclonedx-npm@${CycloneDxNpmVersion}
+    npm install -g @cyclonedx/cyclonedx-npm@${CycloneDxNpmVersion} && \
+    npm install -g gulp-cli@${GulpCliVersion}
 
 #install docker
 RUN install -m 0755 -d /etc/apt/keyrings && \
@@ -135,6 +150,60 @@ RUN install -m 0755 -d /etc/apt/keyrings && \
     apt-get update && \
     apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin && \
     rm -rf /var/lib/apt/lists/*
+
+#install cli-tools which are frequently needed in build-pipelines. They are installed from their official release-artifacts and
+#not from apt, because the debian-mirrors keep only the newest build of a package and therefore do not allow an exact version-pin
+#(the same reason which is documented for chromium below), while release-artifacts stay available permanently. Every version is
+#pinned via the corresponding Other/Resources/Dependencies/<Tool>/Version.txt-file.
+#The architecture-token is determined at build-time so the instructions also work for an arm64-build: "dpkg --print-architecture"
+#returns the token which most of these projects use (amd64/arm64), "uname -m" the one which shellcheck uses (x86_64/aarch64).
+#Each block calls the installed tools once at the end, so a broken or wrongly-named artifact lets the image-build fail instead of
+#failing the pipeline of a consuming repository.
+RUN ARCHITECTURE="$(dpkg --print-architecture)" && \
+    curl -fsSL "https://github.com/jqlang/jq/releases/download/jq-${JqVersion}/jq-linux-${ARCHITECTURE}" -o /usr/local/bin/jq && \
+    curl -fsSL "https://github.com/mikefarah/yq/releases/download/v${YqVersion}/yq_linux_${ARCHITECTURE}" -o /usr/local/bin/yq && \
+    chmod +x /usr/local/bin/jq /usr/local/bin/yq && \
+    curl -fsSL "https://github.com/koalaman/shellcheck/releases/download/v${ShellCheckVersion}/shellcheck-v${ShellCheckVersion}.linux.$(uname -m).tar.xz" -o /tmp/shellcheck.tar.xz && \
+    tar -C /usr/local/bin --strip-components=1 -xJf /tmp/shellcheck.tar.xz "shellcheck-v${ShellCheckVersion}/shellcheck" && \
+    rm /tmp/shellcheck.tar.xz && \
+    jq --version && yq --version && shellcheck --version
+
+#install git-lfs. "git lfs install --system" registers the git-lfs-hooks system-wide, otherwise a checkout of a repository which
+#uses git-lfs silently yields the pointer-files instead of the actual content.
+RUN curl -fsSL "https://github.com/git-lfs/git-lfs/releases/download/v${GitLfsVersion}/git-lfs-linux-$(dpkg --print-architecture)-v${GitLfsVersion}.tar.gz" -o /tmp/git-lfs.tar.gz && \
+    tar -C /usr/local/bin --strip-components=1 -xzf /tmp/git-lfs.tar.gz "git-lfs-${GitLfsVersion}/git-lfs" && \
+    rm /tmp/git-lfs.tar.gz && \
+    git lfs install --system && \
+    git lfs version
+
+#install the clis of the forges
+RUN ARCHITECTURE="$(dpkg --print-architecture)" && \
+    curl -fsSL "https://github.com/cli/cli/releases/download/v${GitHubCliVersion}/gh_${GitHubCliVersion}_linux_${ARCHITECTURE}.tar.gz" -o /tmp/gh.tar.gz && \
+    tar -C /usr/local/bin --strip-components=2 -xzf /tmp/gh.tar.gz "gh_${GitHubCliVersion}_linux_${ARCHITECTURE}/bin/gh" && \
+    curl -fsSL "https://gitlab.com/gitlab-org/cli/-/releases/v${GitLabCliVersion}/downloads/glab_${GitLabCliVersion}_linux_${ARCHITECTURE}.tar.gz" -o /tmp/glab.tar.gz && \
+    tar -C /usr/local/bin --strip-components=1 -xzf /tmp/glab.tar.gz "bin/glab" && \
+    rm /tmp/gh.tar.gz /tmp/glab.tar.gz && \
+    gh --version && glab --version
+
+#install the kubernetes-tooling
+RUN ARCHITECTURE="$(dpkg --print-architecture)" && \
+    curl -fsSL "https://dl.k8s.io/release/v${KubectlVersion}/bin/linux/${ARCHITECTURE}/kubectl" -o /usr/local/bin/kubectl && \
+    chmod +x /usr/local/bin/kubectl && \
+    curl -fsSL "https://get.helm.sh/helm-v${HelmVersion}-linux-${ARCHITECTURE}.tar.gz" -o /tmp/helm.tar.gz && \
+    tar -C /usr/local/bin --strip-components=1 -xzf /tmp/helm.tar.gz "linux-${ARCHITECTURE}/helm" && \
+    curl -fsSL "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KustomizeVersion}/kustomize_v${KustomizeVersion}_linux_${ARCHITECTURE}.tar.gz" -o /tmp/kustomize.tar.gz && \
+    tar -C /usr/local/bin -xzf /tmp/kustomize.tar.gz kustomize && \
+    rm /tmp/helm.tar.gz /tmp/kustomize.tar.gz && \
+    kubectl version --client && helm version && kustomize version
+
+#install azure-cli. It gets an own virtual-environment so that its dependency-tree can not conflict with the one of
+#scriptcollection in /opt/venv; only the "az"-entrypoint is linked into the path.
+#Unlike the other tools of this image azure-cli does collect telemetry by default, AZURE_CORE_COLLECT_TELEMETRY=0 disables it.
+ENV AZURE_CORE_COLLECT_TELEMETRY="0"
+RUN python3 -m venv /opt/azure-cli && \
+    /opt/azure-cli/bin/pip install --no-cache-dir ${PipIndexUrlArguments} azure-cli==${AzureCliVersion} && \
+    ln -s /opt/azure-cli/bin/az /usr/local/bin/az && \
+    az version
 
 #copy entrypoint (ensures a multi-platform-capable buildx builder is available, see EntryPoint.sh, before running the
 #actual command)
@@ -163,6 +232,34 @@ ENV CHROME_BIN="/usr/local/bin/chromium-headless"
 RUN "${CHROME_BIN}" --headless --disable-gpu --no-first-run --user-data-dir=/tmp/chromium-smoketest --dump-dom about:blank > /dev/null && \
     rm -rf /tmp/chromium-smoketest
 
+#setup playwright for end-to-end-tests (e.g. "npx playwright test" in an angular-codeunit). Only the playwright-cli itself is
+#installed globally; the packages a project needs at compile-time (@playwright/test etc.) belong into the package.json of the
+#respective project. The version is pinned via the PlaywrightVersion-build-argument, see
+#Other/Resources/Dependencies/Playwright/Version.txt.
+#The browser-builds are downloaded into a fixed global location (PLAYWRIGHT_BROWSERS_PATH) instead of into the home-directory of
+#the current user, so that they are found independently of who runs the tests and so that a "npm install" of a consuming project
+#does not download them a second time.
+#Note: a playwright-browser-build belongs to exactly one playwright-version. A project which uses another playwright-version in
+#its package.json than the version pinned here does not find these browser-builds and downloads its own ones at runtime.
+#Playwright launches chromium with --no-sandbox and --disable-dev-shm-usage on its own (chromiumSandbox is disabled by default),
+#so - unlike for the karma-chromium above - no wrapper-script is needed for running as root in a container.
+#Playwright itself does not collect telemetry; the only outgoing traffic is the browser-download, which happens here at
+#image-build-time and not at runtime.
+#PLAYWRIGHT_HTML_OPEN=never is required for unattended testruns: with the default "on-failure" the html-reporter starts a
+#webserver after a failed testrun ("Serving HTML report at http://localhost:9323. Press Ctrl+C to quit.") and blocks until it
+#gets interrupted. Playwright suppresses this only when the environment-variable CI is set or when stdin is no tty, so a
+#testrun which is started interactively in this container (docker run -it) would hang forever without this setting. Instead
+#of the webserver playwright now prints the hint "npx playwright show-report", the report itself is still written.
+ENV PLAYWRIGHT_BROWSERS_PATH="/Workspace/Tools/PlaywrightBrowsers"
+ENV PLAYWRIGHT_HTML_OPEN="never"
+RUN npm install -g playwright@${PlaywrightVersion} && \
+    playwright install --with-deps chromium firefox webkit && \
+    rm -rf /var/lib/apt/lists/*
+#the smoke-test ensures that every installed browser-build can actually be started in a container. A broken browser-build must
+#let the image-build fail instead of letting every end-to-end-testrun of every consuming repository fail. NODE_PATH is required
+#because playwright is installed globally and a global package is not resolvable from an arbitrary working-directory otherwise.
+RUN NODE_PATH="$(npm root -g)" node -e "const {chromium,firefox,webkit}=require('playwright'); (async()=>{ for(const type of [chromium,firefox,webkit]){ const browser=await type.launch(); const page=await browser.newPage(); await page.setContent('<p>smoke-test</p>'); await browser.close(); } })().catch(error=>{console.error(error);process.exit(1);})"
+
 #install flutter
 WORKDIR /Workspace/Tools
 ENV PATH="/Workspace/Tools/flutter/bin:/Workspace/Tools/flutter/bin/cache/dart-sdk/bin:${PATH}"
@@ -185,17 +282,15 @@ RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir ${PipIndexUrlArguments} scriptcollection==${ScriptCollectionVersion}
 
-RUN npm install -g @anthropic-ai/claude-code && \
-    npm install -g @openai/codex && \
-    npm install -g @github/copilot
-
-# install ai-related things
+# install ai-related things. Every tool is pinned via the corresponding Other/Resources/Dependencies/<Tool>/Version.txt-file,
+# analog to the other tools of this image. The opencode-installer takes its version via "--version" and resolves it to the
+# github-release v<version>, so the Version.txt contains the version without the leading "v".
 RUN npm install -g @anthropic-ai/claude-code@${ClaudeCodeVersion} && \
     npm install -g @openai/codex@${CodexVersion} && \
     npm install -g @github/copilot@${CopilotVersion} && \
-    npm install -g @google/gemini-cli && \
+    npm install -g @google/gemini-cli@${GeminiCliVersion} && \
     npm install -g @fission-ai/openspec@${OpenSpecVersion} && \
-    curl -fsSL https://opencode.ai/install | bash
+    curl -fsSL https://opencode.ai/install | bash -s -- --version ${OpenCodeVersion}
 
 # download common tools that can be used at runtime
 RUN scdownloadcachabletools -v
