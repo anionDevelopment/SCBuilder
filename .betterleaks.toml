@@ -1,0 +1,21 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Flutter SDK's own test-fixture TLS key (installed by the Dockerfile via 'git clone .../flutter.git', bundled inside the SDK's own test-data, not used by this repository) - false positive."
+paths = [
+    '''Workspace/Tools/flutter/packages/flutter_tools/test/data/asset_test/tls_cert/''',
+]
+
+[[allowlists]]
+description = "Test fixtures of the 'fast-uri' npm package (a transitive dependency of the globally installed @angular/cli and @cyclonedx/cyclonedx-npm packages), containing example URLs with placeholder credentials used by its own parser-tests - false positive."
+paths = [
+    '''node_modules/fast-uri/test/fixtures/''',
+]
+
+[[allowlists]]
+description = "Go SDK's own test-only key files (installed by the Dockerfile from the official go.dev tarball), well-known public dummy keys shipped with the standard library's crypto-tests - false positive."
+paths = [
+    '''usr/local/go/src/crypto/tls/testdata/example-key\.pem''',
+    '''usr/local/go/src/crypto/x509/platform_root_key\.pem''',
+]
