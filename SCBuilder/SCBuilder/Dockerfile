@@ -64,6 +64,7 @@ ARG CopilotVersion
 ARG GeminiCliVersion
 ARG OpenSpecVersion
 ARG OpenCodeVersion
+ARG MistralVibeVersion
 ARG UpgradeScriptCollection=false
 LABEL version=${CodeUnitVersion}
 ENV SCBuilderVersion=${CodeUnitVersion}
@@ -270,6 +271,19 @@ RUN git clone https://github.com/flutter/flutter.git -b ${FlutterVersion} --dept
     flutter config --no-analytics && \
     flutter doctor -v
 
+#install xvfb (a virtual framebuffer) so a real, built flutter-linux-app can actually be launched in this container, e.g.
+#to run "flutter test integration_test/..." against the genuine running app (a real GTK-window on an invisible X11-display)
+#for full-app screenshots, as opposed to the widget-tree-only golden tests "flutter test" already runs on its own without
+#any display. xvfb-run (bundled in the xvfb debian-package) wraps the given command with a freshly started, throwaway
+#Xvfb-instance; "-a" lets it pick a free display-number automatically, avoiding clashes when several testruns happen on
+#the same host. Not version-pinned, like the other apt-packages of the "essential tools"-step above.
+#The smoke-test ensures that Xvfb can actually start in this container: a broken xvfb-install must let the image-build
+#fail instead of letting every full-app-screenshot-testrun of every consuming repository fail.
+RUN apt-get update && \
+    apt-get install -y xvfb && \
+    rm -rf /var/lib/apt/lists/* && \
+    xvfb-run -a -- true
+
 #install go
 RUN curl -fsSL https://go.dev/dl/go${GoVersion}.linux-${PlatformForGoVersion}.tar.gz -o /tmp/go.tar.gz \
     && rm -rf /usr/local/go \
@@ -283,14 +297,14 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir ${PipIndexUrlArguments} scriptcollection==${ScriptCollectionVersion}
 
 # install ai-related things. Every tool is pinned via the corresponding Other/Resources/Dependencies/<Tool>/Version.txt-file,
-# analog to the other tools of this image. The opencode-installer takes its version via "--version" and resolves it to the
-# github-release v<version>, so the Version.txt contains the version without the leading "v".
+# analog to the other tools of this image.
 RUN npm install -g @anthropic-ai/claude-code@${ClaudeCodeVersion} && \
     npm install -g @openai/codex@${CodexVersion} && \
     npm install -g @github/copilot@${CopilotVersion} && \
     npm install -g @google/gemini-cli@${GeminiCliVersion} && \
     npm install -g @fission-ai/openspec@${OpenSpecVersion} && \
-    curl -fsSL https://opencode.ai/install | bash -s -- --version ${OpenCodeVersion}
+    npm install -g opencode-ai@${OpenCodeVersion} && \
+    pip install mistral-vibe==${MistralVibeVersion}
 
 # download common tools that can be used at runtime
 RUN scdownloadcachabletools -v

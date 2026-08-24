@@ -64,6 +64,7 @@ def build():
         "GeminiCliVersion":dependency_version("GeminiCli"),
         "OpenSpecVersion":dependency_version("OpenSpec"),
         "OpenCodeVersion":dependency_version("OpenCode"),
+        "MistralVibeVersion":dependency_version("MistralVibe"),
     }
     tf.build(platforms,build_arguments)
     #TODO add sboms
