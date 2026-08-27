@@ -57,6 +57,10 @@ ARG HelmVersion
 ARG KustomizeVersion
 ARG AzureCliVersion
 ARG FlutterVersion
+ARG AndroidCmdlineToolsVersion
+ARG AndroidPlatformVersion
+ARG AndroidBuildToolsVersion
+ARG AndroidNdkVersion
 ARG ScriptCollectionVersion
 ARG ClaudeCodeVersion
 ARG CodexVersion
@@ -269,6 +273,30 @@ RUN git clone https://github.com/flutter/flutter.git -b ${FlutterVersion} --dept
     flutter precache && \
     flutter config --enable-linux-desktop && \
     flutter config --no-analytics && \
+    flutter doctor -v
+
+#install the android-sdk (required for "flutter build apk"/"flutter build appbundle"). The command-line-tools are
+#pinned via AndroidCmdlineToolsVersion (see Other/Resources/Dependencies/AndroidCmdlineTools/Version.txt); the
+#platform-, build-tools- and ndk-versions (AndroidPlatformVersion/AndroidBuildToolsVersion/AndroidNdkVersion, see the
+#sibling Dependencies-folders) are pre-installed too, so a consuming build does not have to download them (several
+#hundred MB to a few GB) on every run. They were determined empirically by running a Flutter-android-build with the
+#pinned FlutterVersion and reading which packages the Flutter-Gradle-plugin then auto-downloaded - they have to be
+#re-determined the same way and re-pinned here whenever FlutterVersion is bumped, because the Flutter-Gradle-plugin
+#picks its compileSdkVersion/targetSdkVersion/ndkVersion itself and changes them with (nearly) every Flutter-release.
+#The SDK-licenses are accepted regardless (accepting them otherwise needs an interactive confirmation) and
+#$ANDROID_HOME stays writable, so the Android-Gradle-Plugin's own SDK-auto-download still covers any further package
+#a future Flutter-bump needs before this pin is updated - the pre-install here is a cache, not a hard requirement.
+ENV ANDROID_HOME="/Workspace/Tools/android-sdk"
+ENV ANDROID_SDK_ROOT="${ANDROID_HOME}"
+ENV PATH="${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools:${PATH}"
+RUN mkdir -p "${ANDROID_HOME}/cmdline-tools" && \
+    curl -fsSL "https://dl.google.com/android/repository/commandlinetools-linux-${AndroidCmdlineToolsVersion}_latest.zip" -o /tmp/android-cmdline-tools.zip && \
+    unzip -q /tmp/android-cmdline-tools.zip -d "${ANDROID_HOME}/cmdline-tools" && \
+    mv "${ANDROID_HOME}/cmdline-tools/cmdline-tools" "${ANDROID_HOME}/cmdline-tools/latest" && \
+    rm /tmp/android-cmdline-tools.zip && \
+    yes | sdkmanager --licenses > /dev/null && \
+    sdkmanager --install "platform-tools" "platforms;android-${AndroidPlatformVersion}" "build-tools;${AndroidBuildToolsVersion}" "ndk;${AndroidNdkVersion}" && \
+    sdkmanager --version && \
     flutter doctor -v
 
 #install xvfb (a virtual framebuffer) so a real, built flutter-linux-app can actually be launched in this container, e.g.
