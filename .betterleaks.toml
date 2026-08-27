@@ -19,3 +19,9 @@ paths = [
     '''usr/local/go/src/crypto/tls/testdata/example-key\.pem''',
     '''usr/local/go/src/crypto/x509/platform_root_key\.pem''',
 ]
+
+[[allowlists]]
+description = "Go SDK's own test-fixture for 'go get'/git-auth (installed by the Dockerfile from the official go.dev tarball): a dummy credential in a url pointing at vcs-test.golang.org, a sandboxed test-server operated by the Go-team itself for its own integration-tests, not a real/reachable secret - false positive."
+paths = [
+    '''usr/local/go/src/cmd/go/testdata/script/goauth_git\.txt''',
+]
