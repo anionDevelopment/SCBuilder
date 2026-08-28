@@ -4,7 +4,7 @@
     <version>1.2.9</version>
     <codeunitownername>Marius Göcke</codeunitownername>
     <codeunitowneremailaddress>marius.goecke@gmail.com</codeunitowneremailaddress>
-    <properties codeunithastestablesourcecode="false" codeunithasupdatabledependencies="false" throwexceptionifcodeunitfilecannotbevalidated="true" developmentstate="Active development" description="SCTaskRunnerMacOS provides an HTTP-server that builds operating-system-bound build-steps (e.g. flutter ios-builds) natively on a macOS-host on behalf of remote clients (see ScriptCollection's TFCPS_RemoteBuild).">
+    <properties codeunithastestablesourcecode="false" codeunithasupdatabledependencies="false" throwexceptionifcodeunitfilecannotbevalidated="true" developmentstate="Active development" description="SCTaskRunnerMacOS provides an HTTP-server that builds operating-system-bound build-steps natively on a macOS-host on behalf of remote clients requiring RunnerOperatingSystem.MacOS (see ScriptCollection's TFCPS_RemoteBuild). Currently unused: iOS-builds delegate to the dedicated SCTaskRunnerIOS-codeunit instead.">
         <pipelinedemands>
         </pipelinedemands>
         <updatesettings>

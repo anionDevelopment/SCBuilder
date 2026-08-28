@@ -1,11 +1,7 @@
-# SCTaskRunnerMacOS
+# SCTaskRunnerIOS
 
-SCTaskRunnerMacOS provides an HTTP-server that builds operating-system-bound build-steps **natively on a macOS-host** on
-behalf of remote clients that require `RunnerOperatingSystem.MacOS`.
-
-> **Currently unused.** iOS-builds (flutter `ios`) no longer use this runner - they delegate to the dedicated
-> [`SCTaskRunnerIOS`](../SCTaskRunnerIOS/ReadMe.md)-codeunit (`RunnerOperatingSystem.IOS`) instead. This codeunit is kept for
-> a future, not-flutter-specific macOS-native build-step; it currently never receives a job.
+SCTaskRunnerIOS provides an HTTP-server that builds iOS-app build-steps (for example flutter `ios`-builds)
+**natively on a macOS-host** on behalf of remote clients.
 
 It is the counterpart of ScriptCollection's `TFCPS_RemoteBuild`: a client (a developer-machine or the Debian-build-pipeline)
 sends the whole repository as a tar-archive, this runner builds the requested step on macOS and returns the codeunit-folder.
@@ -18,7 +14,8 @@ Per job the runner:
 4. deletes the workspace as soon as the client deletes the job (so no repository-content remains on the runner).
 
 The actual server-logic lives in ScriptCollection (`ScriptCollection.TFCPS.SCTaskRunnerServer`); this codeunit is only the
-thin macOS-entry-point.
+thin iOS-entry-point. It is the direct analog of `SCTaskRunnerWindows`/`SCTaskRunnerMacOS`, just scoped to iOS-builds
+(`RunnerOperatingSystem.IOS`) instead of Windows- or generic macOS-builds.
 
 ## Requirements
 - Python with the `scriptcollection`-package installed.
@@ -37,7 +34,7 @@ the native macOS-toolchain. Configuration is read from environment-variables:
 ```
 export SCTaskRunner_Username=runner
 export SCTaskRunner_Password=<secret>
-python3 SCTaskRunnerMacOS/SCTaskRunnerMacOS.py
+python3 SCTaskRunnerIOS/SCTaskRunnerIOS.py
 ```
 
 Expose the runner to the clients over HTTPS (e.g. via a reverse-proxy) and configure its URL/credentials on the client-side

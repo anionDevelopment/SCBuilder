@@ -3,9 +3,9 @@ requires = ["setuptools >= 82.0.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "sctaskrunnermacos"
-version = "1.2.9"
-description = "SCTaskRunnerMacOS provides an HTTP-server that builds operating-system-bound build-steps natively on a macOS-host on behalf of remote clients requiring RunnerOperatingSystem.MacOS. Currently unused: iOS-builds delegate to SCTaskRunnerIOS instead."
+name = "sctaskrunnerios"
+version = "1.2.10"
+description = "SCTaskRunnerIOS provides an HTTP-server that builds iOS-app build-steps (e.g. flutter ios-builds) natively on a macOS-host on behalf of remote clients."
 readme = { file = "ReadMe.md", content-type = "text/markdown" }
 requires-python = ">=3.11"
 authors = [
@@ -21,7 +21,7 @@ dependencies = [
 ]
 
 [project.scripts]
-sctaskrunnermacos = "SCTaskRunnerMacOS.SCTaskRunnerMacOSCore:main"
+sctaskrunnerios = "SCTaskRunnerIOS.SCTaskRunnerIOSCore:main"
 
 [tool.setuptools]
 zip-safe = false
@@ -29,5 +29,5 @@ include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["SCTaskRunnerMacOS*"]
-exclude = ["SCTaskRunnerMacOSTests*"]
+include = ["SCTaskRunnerIOS*"]
+exclude = ["SCTaskRunnerIOSTests*"]
