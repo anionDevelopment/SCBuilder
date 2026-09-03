@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='utf-8'?>
 <codeunit xmlns="https://projects.aniondev.de/PublicProjects/Common/ProjectTemplates/-/tree/main/Conventions/RepositoryStructure/CommonProjectStructure" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" codeunitspecificationversion="3.0.0" xsi:schemaLocation="https://projects.aniondev.de/PublicProjects/Common/ProjectTemplates/-/tree/main/Conventions/RepositoryStructure/CommonProjectStructure https://projects.aniondev.de/PublicProjects/Common/ProjectTemplates/-/raw/v3.0.0/Conventions/RepositoryStructure/CommonProjectStructure/codeunit.xsd" enabled="true">
     <name>SCTaskRunnerMacOS</name>
-    <version>1.2.9</version>
+    <version>1.2.10</version>
     <codeunitownername>Marius Göcke</codeunitownername>
     <codeunitowneremailaddress>marius.goecke@gmail.com</codeunitowneremailaddress>
-    <properties codeunithastestablesourcecode="false" codeunithasupdatabledependencies="false" throwexceptionifcodeunitfilecannotbevalidated="true" developmentstate="Active development" description="SCTaskRunnerMacOS provides an HTTP-server that builds operating-system-bound build-steps natively on a macOS-host on behalf of remote clients requiring RunnerOperatingSystem.MacOS (see ScriptCollection's TFCPS_RemoteBuild). Currently unused: iOS-builds delegate to the dedicated SCTaskRunnerIOS-codeunit instead.">
+    <properties codeunithastestablesourcecode="false" codeunithasupdatabledependencies="false" throwexceptionifcodeunitfilecannotbevalidated="true" developmentstate="Active development" description="SCTaskRunnerMacOS provides an HTTP-server that builds operating-system-bound build-steps (e.g. flutter macos-desktop-builds) natively on a macOS-host on behalf of remote clients requiring RunnerOperatingSystem.MacOS (see ScriptCollection's TFCPS_RemoteBuild). iOS-builds delegate to the dedicated SCTaskRunnerIOS-codeunit instead.">
         <pipelinedemands>
         </pipelinedemands>
         <updatesettings>

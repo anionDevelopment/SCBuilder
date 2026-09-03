@@ -1,11 +1,11 @@
 # SCTaskRunnerMacOS
 
-SCTaskRunnerMacOS provides an HTTP-server that builds operating-system-bound build-steps **natively on a macOS-host** on
-behalf of remote clients that require `RunnerOperatingSystem.MacOS`.
+SCTaskRunnerMacOS provides an HTTP-server that builds operating-system-bound build-steps (for example flutter
+`macos`-desktop-builds) **natively on a macOS-host** on behalf of remote clients that require `RunnerOperatingSystem.MacOS`.
 
-> **Currently unused.** iOS-builds (flutter `ios`) no longer use this runner - they delegate to the dedicated
-> [`SCTaskRunnerIOS`](../SCTaskRunnerIOS/ReadMe.md)-codeunit (`RunnerOperatingSystem.IOS`) instead. This codeunit is kept for
-> a future, not-flutter-specific macOS-native build-step; it currently never receives a job.
+> **Note.** iOS-builds (flutter `ios`) do not use this runner - they delegate to the dedicated
+> [`SCTaskRunnerIOS`](../SCTaskRunnerIOS/ReadMe.md)-codeunit (`RunnerOperatingSystem.IOS`) instead, so that a macOS-desktop-
+> and an iOS-build of the same repository can be delegated to two different runners.
 
 It is the counterpart of ScriptCollection's `TFCPS_RemoteBuild`: a client (a developer-machine or the Debian-build-pipeline)
 sends the whole repository as a tar-archive, this runner builds the requested step on macOS and returns the codeunit-folder.
@@ -13,7 +13,7 @@ sends the whole repository as a tar-archive, this runner builds the requested st
 ## How it works
 Per job the runner:
 1. extracts the received repository-archive into a fresh, empty workspace (isolation),
-2. runs the requested program (e.g. `flutter build ios`) on this macOS-host,
+2. runs the requested program (e.g. `flutter build macos`) on this macOS-host,
 3. returns the codeunit-folder to the client,
 4. deletes the workspace as soon as the client deletes the job (so no repository-content remains on the runner).
 
@@ -25,8 +25,8 @@ thin macOS-entry-point.
 - The toolchain required by the delegated builds (e.g. flutter, Xcode).
 
 ## Run
-The runner runs **natively** - there is no container-variant, because there are no macOS-containers and iOS-builds require
-the native macOS-toolchain. Configuration is read from environment-variables:
+The runner runs **natively** - there is no container-variant, because there are no macOS-containers and macOS-desktop-builds
+require the native macOS-toolchain. Configuration is read from environment-variables:
 
 | Variable | Meaning | Default |
 |---|---|---|
