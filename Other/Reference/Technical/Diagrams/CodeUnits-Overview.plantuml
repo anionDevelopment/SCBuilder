@@ -14,9 +14,21 @@ note as SCGitHubRunnerNote
 end note
 SCGitHubRunner .. SCGitHubRunnerNote
 
+[SCTaskRunnerAndroid]
+note as SCTaskRunnerAndroidNote
+  SCTaskRunnerAndroid is a container-image that provides an HTTP-server which builds Android-app build-steps (e.g. flutter appbundle-builds) on behalf of remote clients (see ScriptCollection's TFCPS_RemoteBuild), using the Android-SDK/NDK/Flutter-toolchain bundled in this image.
+end note
+SCTaskRunnerAndroid .. SCTaskRunnerAndroidNote
+
+[SCTaskRunnerIOS]
+note as SCTaskRunnerIOSNote
+  SCTaskRunnerIOS provides an HTTP-server that builds iOS-app build-steps (e.g. flutter ios-builds) natively on a macOS-host on behalf of remote clients (see ScriptCollection's TFCPS_RemoteBuild).
+end note
+SCTaskRunnerIOS .. SCTaskRunnerIOSNote
+
 [SCTaskRunnerMacOS]
 note as SCTaskRunnerMacOSNote
-  SCTaskRunnerMacOS provides an HTTP-server that builds operating-system-bound build-steps (e.g. flutter ios-builds) natively on a macOS-host on behalf of remote clients (see ScriptCollection's TFCPS_RemoteBuild).
+  SCTaskRunnerMacOS provides an HTTP-server that builds operating-system-bound build-steps (e.g. flutter macos-desktop-builds) natively on a macOS-host on behalf of remote clients requiring RunnerOperatingSystem.MacOS (see ScriptCollection's TFCPS_RemoteBuild). iOS-builds delegate to the dedicated SCTaskRunnerIOS-codeunit instead.
 end note
 SCTaskRunnerMacOS .. SCTaskRunnerMacOSNote
 
