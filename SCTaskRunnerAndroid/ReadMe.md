@@ -48,6 +48,9 @@ Run the built image as a long-lived container. Configuration is read from enviro
 | `SCTaskRunner_Port` | TCP-port to listen on | `8080` |
 | `SCTaskRunner_CertificateFile` | Path to the TLS-certificate-file | (none) |
 | `SCTaskRunner_CertificateKeyFile` | Path to the TLS-certificate-key-file | (none) |
+| `SCTaskRunner_GradleMaxHeap` | Maximum heap of the gradle-build | `2g` |
+| `SCTaskRunner_GradleMaxMetaspace` | Maximum metaspace of the gradle-build | `768m` |
+| `SCTaskRunner_GradleMaxWorkers` | Maximum amount of gradle-worker-processes | `2` |
 
 ```
 docker run -d --name sctaskrunnerandroid --restart unless-stopped \
@@ -60,6 +63,17 @@ docker run -d --name sctaskrunnerandroid --restart unless-stopped \
 When both `SCTaskRunner_CertificateFile` and `SCTaskRunner_CertificateKeyFile` are set, the runner is served over **TLS
 (https)** directly. Otherwise it is served over plain http - use this when TLS is terminated by a reverse-proxy in front of
 the runner instead.
+
+The three `SCTaskRunner_Gradle*`-variables define how much memory a build may use. They exist because that is a property of
+this container (its memory-limit) and not of the built app: a flutter-project brings a `gradle.properties` asking for 8 GiB
+of heap plus 4 GiB of metaspace, which makes the kernel kill the gradle-process in a smaller container. `EntryPoint.sh`
+applies the values through a `gradle.properties` in `$GRADLE_USER_HOME`, which takes precedence over the one of the built
+repository. The defaults are sized for a container with 6 GiB.
+
+`$GRADLE_USER_HOME` (`/Caches/gradle`) and `$PUB_CACHE` (`/Caches/pub`) are pure download-caches and should be mounted as
+named volumes, as should `/tmp` (which holds the job-workspaces). See
+[Running the runner](./Other/Reference/ReferenceContent/Articles/RunningTheRunner.md) for a complete docker-compose- and
+reverse-proxy-example.
 
 Expose the runner to the clients (directly over TLS as configured above, or via an HTTPS-reverse-proxy). On the client-side
 configure its URL and credentials in `~/.ScriptCollection/TFCPS/Runner.csv` (line `url;user;password`) or via the

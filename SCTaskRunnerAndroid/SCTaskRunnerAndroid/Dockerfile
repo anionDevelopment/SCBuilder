@@ -29,6 +29,16 @@ RUN mkdir /Workspace && \
     apt-get install -y ca-certificates curl git unzip python3 python3-pip python3-venv && \
     rm -rf /var/lib/apt/lists/*
 
+#the download-caches of gradle and pub are placed in an explicit folder-tree instead of wherever the tools would put them
+#by default (which depends on $HOME and, for pub, on the dart-version). A deployment mounts these two folders as volumes:
+#they are pure caches, but without them every job re-downloads the gradle-distribution the project's gradle-wrapper asks
+#for plus all maven- and pub-packages of the app, which is several hundred megabytes per job.
+#$GRADLE_USER_HOME is additionally the folder whose gradle.properties overrules the one of the built repository, which is
+#what EntryPoint.sh uses to keep a build inside the memory-limit of this container - see the comment there.
+ENV GRADLE_USER_HOME="/Caches/gradle"
+ENV PUB_CACHE="/Caches/pub"
+RUN mkdir -p "${GRADLE_USER_HOME}" "${PUB_CACHE}"
+
 #install java (Eclipse-Temurin), required by the Android-Gradle-Plugin. Installed from the Temurin-tarball, same
 #mechanism/pin as SCBuilder used to install it.
 RUN JAVA_ASSET_VERSION="$(echo "${JavaBuildVersion}" | tr '+' '_')" && \
