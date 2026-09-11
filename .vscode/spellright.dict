@@ -40,3 +40,7 @@ gradle
 kotlin
 metaspace
 allowlist
+exitcode
+loglevel
+stacktrace
+stacktraces

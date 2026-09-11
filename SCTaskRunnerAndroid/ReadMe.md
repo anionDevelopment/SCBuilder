@@ -9,7 +9,8 @@ SCTaskRunnerAndroid provides an HTTP-server that builds Android-app build-steps 
 behalf of remote clients, using the Android-SDK/NDK/Flutter-toolchain contained in this image.
 
 It is the counterpart of ScriptCollection's `TFCPS_RemoteBuild`: a client (a developer-machine or the Debian-build-pipeline)
-sends the whole repository as a tar-archive, this runner builds the requested step and returns the codeunit-folder.
+sends the whole repository as a tar-archive, this runner builds the requested step and returns the folder the client
+stated its result is in.
 
 Unlike `SCTaskRunnerWindows`/`SCTaskRunnerMacOS` (which run natively, because there are no Windows-/macOS-containers),
 `SCTaskRunnerAndroid` runs as a **container**: the Android-SDK/NDK works inside a Linux-container, so this image is meant to
@@ -26,7 +27,7 @@ SCBuilder contains (dotnet, node, rust, go, docker, the ai-clis, ...) is deliber
 Per job the runner:
 1. extracts the received repository-archive into a fresh, empty workspace (isolation),
 2. runs the requested program (e.g. `flutter build appbundle`) inside this container,
-3. returns the codeunit-folder to the client,
+3. returns the folder the client stated its result is in (for an android-app-build the folder with the app-bundle),
 4. deletes the workspace as soon as the client deletes the job (so no repository-content remains on the runner).
 
 The actual server-logic lives in ScriptCollection (`ScriptCollection.TFCPS.SCTaskRunnerServer`); this codeunit only adds the
