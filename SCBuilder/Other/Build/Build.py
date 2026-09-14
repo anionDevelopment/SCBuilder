@@ -65,6 +65,7 @@ def build():
         "OpenSpecVersion":dependency_version("OpenSpec"),
         "OpenCodeVersion":dependency_version("OpenCode"),
         "MistralVibeVersion":dependency_version("MistralVibe"),
+        "PlantUmlVersion":dependency_version("PlantUML"),
     }
     tf.build(platforms,build_arguments)
     #TODO add sboms

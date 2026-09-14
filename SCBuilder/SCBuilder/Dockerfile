@@ -65,6 +65,7 @@ ARG GeminiCliVersion
 ARG OpenSpecVersion
 ARG OpenCodeVersion
 ARG MistralVibeVersion
+ARG PlantUmlVersion
 ARG UpgradeScriptCollection=false
 LABEL version=${CodeUnitVersion}
 ENV SCBuilderVersion=${CodeUnitVersion}
@@ -313,5 +314,10 @@ RUN npm install -g @anthropic-ai/claude-code@${ClaudeCodeVersion} && \
 
 # download common tools that can be used at runtime
 RUN scdownloadcachabletools -v
+
+# install PlantUML
+RUN mkdir -p /opt/plantuml && \
+    curl -fsSL "https://github.com/plantuml/plantuml/releases/download/${PlantUmlVersion}/plantuml-${PlantUmlVersion#v}.jar" -o /opt/plantuml/plantuml.jar
+ENV PLANTUML_JAR="/opt/plantuml/plantuml.jar"
 
 ENTRYPOINT ["/usr/local/bin/EntryPoint.sh"]
