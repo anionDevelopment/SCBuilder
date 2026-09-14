@@ -136,8 +136,7 @@ class Updater:
     def __update_dependency(self, dependency_name: str, available_versions: list[str], version_prefix: str = "") -> None:
         """Updates the given dependency to the newest of the given versions which the echolon allows.
 
-        The prefix is the part which the version-file contains besides the version itself (PlantUML for example is
-        pinned as "v1.2026.6"). It is removed before the versions are compared and added again before the value is
+        The prefix is the part which the version-file contains besides the version itself. It is removed before the versions are compared and added again before the value is
         written, so the file keeps the form which the build of the image expects."""
         chosen_version: str = GeneralUtilities.choose_version(available_versions, self.__get_current_version(dependency_name, version_prefix), self.__echolon)
         self.__set_dependency_version(dependency_name, version_prefix + chosen_version)
@@ -291,11 +290,6 @@ class Updater:
     def __update_dependency_openspec(self):
         self.__update_npm_dependency("OpenSpec", "@fission-ai/openspec")
 
-    def __update_dependency_plantuml(self):
-        # The version-file of plantuml contains the tag itself (for example "v1.2026.6"), so the "v" is part
-        # of the value which is written.
-        self.__update_github_dependency("PlantUML", "plantuml/plantuml", "v", "v")
-
     def __update_dependency_playwright(self):
         self.__update_npm_dependency("Playwright", "playwright")
 
@@ -370,7 +364,6 @@ class Updater:
         self.__update_dependency_node()
         self.__update_dependency_opencode()
         self.__update_dependency_openspec()
-        self.__update_dependency_plantuml()
         self.__update_dependency_playwright()
         self.__update_dependency_pnpm()
         self.__update_dependency_prettier()

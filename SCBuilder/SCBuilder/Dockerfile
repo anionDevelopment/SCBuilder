@@ -5,14 +5,9 @@ ARG DotNetRuntime
 ARG PipIndexUrlArguments
 ARG GoVersion
 ARG PlatformForGoVersion
-# System-JDK: the exact build (JavaBuildVersion, e.g. "25.0.4+7") and its major (JavaVersion, e.g. "25") are both passed in
-# by Other/Build/Build.py from Other/Resources/Dependencies/JDK/Version.txt. That is the same JDK-pin ScriptCollection reads
-# to render the PlantUML-diagrams, so the system-java matches that JDK automatically. Change it in that Version.txt.
 ARG JavaVersion
 ARG JavaBuildVersion
-# Temurin-architecture-token for the platform the image is built for (x64 or aarch64).
 ARG PlatformForJavaVersion=x64
-# Node major-version, passed in from Other/Resources/Dependencies/Node/Version.txt.
 ARG NodeVersion
 # Exact debian-package-version of chromium (used for the headless browser-based frontend-tests), passed in from
 # Other/Resources/Dependencies/Chromium/Version.txt. Pinned so that the image always contains a chromium-build which is
@@ -24,10 +19,6 @@ ARG NodeVersion
 # and apt then fails with "E: Version '<pinned version>' for 'chromium' was not found". The current version of the suite
 # of the base-image is listed at https://packages.debian.org/chromium.
 ARG ChromiumVersion
-# tool-versions: the values are passed in by the build (Other/Build/Build.py) from the corresponding
-# Other/Resources/Dependencies/<Tool>/Version.txt-file, analog to GoVersion above. Change a version by editing that
-# Version.txt-file, not here. DotNetSdkVersion is the dotnet feature-band (installed from the rolling microsoft-apt-repo),
-# not an exact patch-pin.
 ARG DotNetSdkVersion
 ARG EpewVersion
 ARG GitVersionToolVersion
@@ -69,7 +60,6 @@ ARG GeminiCliVersion
 ARG OpenSpecVersion
 ARG OpenCodeVersion
 ARG MistralVibeVersion
-ARG PlantUmlVersion
 ARG UpgradeScriptCollection=false
 LABEL version=${CodeUnitVersion}
 ENV SCBuilderVersion=${CodeUnitVersion}
@@ -85,9 +75,7 @@ RUN mkdir /Workspace && \
     rm -rf /var/lib/apt/lists/*
 
 #install java (Eclipse-Temurin). Installed from the Temurin-tarball (like Go) instead of the Debian-openjdk-apt-package so
-#the exact build can be pinned. This is the system-JDK used by maven and other JVM-tooling; the PlantUML-diagram-rendering
-#uses the (identical) JDK that ScriptCollection manages in its global cache. The build is pinned to match
-#ScriptCollection's __default_pinned_jdk_version.
+#the exact build can be pinned. This is the system-JDK used by maven and other JVM-tooling;
 RUN JAVA_ASSET_VERSION="$(echo "${JavaBuildVersion}" | tr '+' '_')" && \
     curl -fsSL "https://github.com/adoptium/temurin${JavaVersion}-binaries/releases/download/jdk-${JavaBuildVersion}/OpenJDK${JavaVersion}U-jdk_${PlatformForJavaVersion}_linux_hotspot_${JAVA_ASSET_VERSION}.tar.gz" -o /tmp/java.tar.gz && \
     mkdir -p /usr/local/java && \
@@ -318,10 +306,5 @@ RUN npm install -g @anthropic-ai/claude-code@${ClaudeCodeVersion} && \
 
 # download common tools that can be used at runtime
 RUN scdownloadcachabletools -v
-
-# install PlantUML
-RUN mkdir -p /opt/plantuml && \
-    curl -fsSL "https://github.com/plantuml/plantuml/releases/download/${PlantUmlVersion}/plantuml-${PlantUmlVersion#v}.jar" -o /opt/plantuml/plantuml.jar
-ENV PLANTUML_JAR="/opt/plantuml/plantuml.jar"
 
 ENTRYPOINT ["/usr/local/bin/EntryPoint.sh"]
