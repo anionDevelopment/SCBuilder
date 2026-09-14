@@ -5,7 +5,7 @@ ARG DotNetRuntime
 ARG PipIndexUrlArguments
 ARG GoVersion
 ARG PlatformForGoVersion
-# System-JDK: the exact build (JavaBuildVersion, e.g. "25.0.4_7") and its major (JavaVersion, e.g. "25") are both passed in
+# System-JDK: the exact build (JavaBuildVersion, e.g. "25.0.4+7") and its major (JavaVersion, e.g. "25") are both passed in
 # by Other/Build/Build.py from Other/Resources/Dependencies/JDK/Version.txt. That is the same JDK-pin ScriptCollection reads
 # to render the PlantUML-diagrams, so the system-java matches that JDK automatically. Change it in that Version.txt.
 ARG JavaVersion
@@ -19,6 +19,10 @@ ARG NodeVersion
 # known to work. Not every published build does: 150.0.7871.46-1~deb13u1 for example terminated with SIGTRAP directly
 # during the startup, which made every karma-testrun fail with "Cannot start ChromeHeadless". Raise this value in that
 # Version.txt only to a build which passes the chromium-smoke-test below.
+# The pin has to be raised whenever debian publishes a new chromium-build: the debian-mirror carries exactly one
+# chromium-version per suite, so a superseded version is removed permanently (it only remains on snapshot.debian.org)
+# and apt then fails with "E: Version '<pinned version>' for 'chromium' was not found". The current version of the suite
+# of the base-image is listed at https://packages.debian.org/chromium.
 ARG ChromiumVersion
 # tool-versions: the values are passed in by the build (Other/Build/Build.py) from the corresponding
 # Other/Resources/Dependencies/<Tool>/Version.txt-file, analog to GoVersion above. Change a version by editing that
