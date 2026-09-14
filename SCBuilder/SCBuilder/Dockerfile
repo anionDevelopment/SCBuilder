@@ -5,9 +5,9 @@ ARG DotNetRuntime
 ARG PipIndexUrlArguments
 ARG GoVersion
 ARG PlatformForGoVersion
-# System-JDK: the exact build (JavaBuildVersion, e.g. "21.0.6+7") and its major (JavaVersion, e.g. "21") are both passed in
-# by Other/Build/Build.py from Other/Resources/Dependencies/JRE/Version.txt. That is the same JRE-pin ScriptCollection reads
-# to render the PlantUML-diagrams, so the system-java matches that JRE automatically. Change it in that Version.txt.
+# System-JDK: the exact build (JavaBuildVersion, e.g. "25.0.4_7") and its major (JavaVersion, e.g. "25") are both passed in
+# by Other/Build/Build.py from Other/Resources/Dependencies/JDK/Version.txt. That is the same JDK-pin ScriptCollection reads
+# to render the PlantUML-diagrams, so the system-java matches that JDK automatically. Change it in that Version.txt.
 ARG JavaVersion
 ARG JavaBuildVersion
 # Temurin-architecture-token for the platform the image is built for (x64 or aarch64).
@@ -82,8 +82,8 @@ RUN mkdir /Workspace && \
 
 #install java (Eclipse-Temurin). Installed from the Temurin-tarball (like Go) instead of the Debian-openjdk-apt-package so
 #the exact build can be pinned. This is the system-JDK used by maven and other JVM-tooling; the PlantUML-diagram-rendering
-#uses the (identical) JRE that ScriptCollection manages in its global cache. The build is pinned to match
-#ScriptCollection's __default_pinned_jre_version.
+#uses the (identical) JDK that ScriptCollection manages in its global cache. The build is pinned to match
+#ScriptCollection's __default_pinned_jdk_version.
 RUN JAVA_ASSET_VERSION="$(echo "${JavaBuildVersion}" | tr '+' '_')" && \
     curl -fsSL "https://github.com/adoptium/temurin${JavaVersion}-binaries/releases/download/jdk-${JavaBuildVersion}/OpenJDK${JavaVersion}U-jdk_${PlatformForJavaVersion}_linux_hotspot_${JAVA_ASSET_VERSION}.tar.gz" -o /tmp/java.tar.gz && \
     mkdir -p /usr/local/java && \

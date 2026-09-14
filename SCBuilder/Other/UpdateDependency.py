@@ -262,8 +262,8 @@ class Updater:
     def __update_dependency_helm(self):
         self.__update_github_dependency("Helm", "helm/helm", "v")
 
-    def __update_dependency_jre(self):
-        # Not updated here: the pinned value ("21.0.6+7") states the build of a temurin-release, which the
+    def __update_dependency_jdk(self):
+        # Not updated here: the pinned value ("25.0.4_7") states the build of a temurin-release, which the
         # download-url of the image is built from. Its form is not the one of the other dependencies, so it is taken
         # over deliberately together with that url.
         pass
@@ -362,7 +362,7 @@ class Updater:
         self.__update_dependency_gotask()
         self.__update_dependency_gulpcli()
         self.__update_dependency_helm()
-        self.__update_dependency_jre()
+        self.__update_dependency_jdk()
         self.__update_dependency_jq()
         self.__update_dependency_kubectl()
         self.__update_dependency_kustomize()

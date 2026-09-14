@@ -92,10 +92,10 @@ class Updater:
     def __update_dependency_flutter(self):
         self.__update_dependency("Flutter", self.__get_available_versions_of_flutter())
 
-    def __update_dependency_jre(self):
-        # Not updated here: the pinned value ("21.0.6+7") states the build of a temurin-release, which the
+    def __update_dependency_jdk(self):
+        # Not updated here: the pinned value ("25.0.4_7") states the build of a temurin-release, which the
         # download-url of the image is built from. Its form is not the one of the other dependencies, so it is taken
-        # over deliberately together with that url. Kept in sync with the JRE-pin of SCBuilder.
+        # over deliberately together with that url. Kept in sync with the JDK-pin of SCBuilder.
         pass
 
     def __update_dependency_scriptcollection(self):
@@ -110,7 +110,7 @@ class Updater:
 
     def update_dependencies(self):
         self.__update_dependency_flutter()
-        self.__update_dependency_jre()
+        self.__update_dependency_jdk()
         self.__update_dependency_scriptcollection()
 
 def update_dependencies():

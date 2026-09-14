@@ -19,7 +19,7 @@ permanently-running container), instead of as a one-shot build-image like `SCBui
 
 Besides the name, this codeunit is built exactly like `SCBuilder` (same kind of Dockerfile, same
 dependency-definition-/build-/update-scripts), but it only contains what is required to build Android-apps: Flutter, the
-Android-SDK/NDK, the JRE the Android-Gradle-Plugin needs, and ScriptCollection (to run the server itself). Everything else
+Android-SDK/NDK, the JDK the Android-Gradle-Plugin needs, and ScriptCollection (to run the server itself). Everything else
 SCBuilder contains (dotnet, node, rust, go, docker, the ai-clis, ...) is deliberately not part of this image.
 
 ## How it works

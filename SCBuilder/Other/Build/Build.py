@@ -13,9 +13,9 @@ def build():
     resources_folder=os.path.join(tf.get_codeunit_folder(),"Other","Resources")
     def dependency_version(dependency_name:str)->str:
         return tf.tfcps_Tools_General.get_dependency_version_in_resources_folder(resources_folder,dependency_name)
-    # the exact java-build (e.g. "21.0.6+7") is the JRE-pin; JavaVersion is its major (e.g. "21"). This is the same
-    # JRE/Version.txt that ScriptCollection reads for the PlantUML-rendering, so the system-JDK matches that JRE.
-    java_build_version=dependency_version("JRE")
+    # the exact java-build (e.g. "25.0.4_7") is the JDK-pin; JavaVersion is its major (e.g. "25"). This is the same
+    # JDK/Version.txt that ScriptCollection reads for the PlantUML-rendering, so the system-JDK matches that JDK.
+    java_build_version=dependency_version("JDK")
     # each build-arg is read from the corresponding Other/Resources/Dependencies/<dependency>/Version.txt-file
     build_arguments={
         "image_debian":tf.tfcps_Tools_General.oci_image_manager.get_registry_address_for_image_with_default_tag(tf.get_repository_folder(),"Debian"),
