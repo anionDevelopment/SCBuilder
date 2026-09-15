@@ -1,21 +1,81 @@
 <?xml version='1.0' encoding='utf-8'?>
-<svg xmlns="http://www.w3.org/2000/svg" contentStyleType="text/css" data-diagram-type="DESCRIPTION" height="248px" preserveAspectRatio="none" style="width:307px;height:248px;background:#FFFFFF;" version="1.1" viewBox="0 0 307 248" width="307px" zoomAndPan="magnify">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" data-diagram-type="DESCRIPTION" style="width:8476px;height:190px;background:#FFFFFF;" width="8476px" height="190px" viewBox="0 0 8476 190" zoomAndPan="magnify" preserveAspectRatio="none" contentStyleType="text/css">
   <defs />
-  <g>
+  <g font-family="sans-serif" lengthAdjust="spacing">
     <g class="title" data-source-line="2">
-      <text fill="#000000" font-family="'DejaVu Sans'" font-size="14" font-weight="700" lengthAdjust="spacing" textLength="183.0391" x="58.7739" y="22.9951">CodeUnits of SCBuilder</text>
+      <text x="4143.212" y="22.995" fill="#000" font-size="14" textLength="183.039" font-weight="700" font-family="'DejaVu Sans'">CodeUnits of SCBuilder</text>
     </g>
-    <text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="700" lengthAdjust="spacing" textLength="264.9541" x="5" y="56.2969">Dot Executable: /opt/local/bin/dot</text>
-    <text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="700" lengthAdjust="spacing" textLength="236.2637" x="5" y="72.5938">Dot executable does not exist</text>
-    <text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="700" lengthAdjust="spacing" textLength="291.5869" x="5" y="88.8906">Cannot find Graphviz. You should try</text>
-    <text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="700" lengthAdjust="spacing" textLength="4.874" x="5" y="105.1875" />
-    <text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="700" lengthAdjust="spacing" textLength="81.4229" x="5" y="121.4844">@startuml</text>
-    <text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="700" lengthAdjust="spacing" textLength="57.5449" x="5" y="137.7813">testdot</text>
-    <text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="700" lengthAdjust="spacing" textLength="72.8369" x="5" y="154.0781">@enduml</text>
-    <text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="700" lengthAdjust="spacing" textLength="4.874" x="5" y="170.375" />
-    <text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="700" lengthAdjust="spacing" textLength="16.5225" x="9.874" y="186.6719">or</text>
-    <text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="700" lengthAdjust="spacing" textLength="4.874" x="5" y="202.9688" />
-    <text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="700" lengthAdjust="spacing" textLength="234.5068" x="5" y="219.2656">java -jar plantuml.jar -testdot</text>
-    <text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="700" lengthAdjust="spacing" textLength="4.874" x="5" y="235.5625" />
+    <g class="entity" data-qualified-name="SCBuilder" id="ent0001" data-source-line="4">
+      <rect x="183.84" y="44.297" width="108.175" height="46.297" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" rx="2.5" ry="2.5" />
+      <rect x="272.015" y="49.297" width="15" height="10" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" />
+      <rect x="270.015" y="51.297" width="4" height="2" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" />
+      <rect x="270.015" y="55.297" width="4" height="2" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" />
+      <text x="198.84" y="77.292" fill="#000" font-size="14" textLength="68.175" font-family="'DejaVu Sans'">SCBuilder</text>
+    </g>
+    <g class="entity" data-qualified-name="SCBuilderNote" id="ent0002" data-source-line="6">
+      <path d="M6,150.597 L6,175.73 A0,0 0 0 0 6,175.73 L469.863,175.73 A0,0 0 0 0 469.863,175.73 L469.863,160.597 L459.863,150.597 L241.93,150.597 L237.93,90.657 L233.93,150.597 L6,150.597 A0,0 0 0 0 6,150.597" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD" />
+      <path d="M459.863,150.597 L459.863,160.597 L469.863,160.597 L459.863,150.597" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD" />
+      <text x="12" y="167.664" fill="#000" font-size="13" textLength="442.863" font-family="'DejaVu Sans'">SCBuilder is the builder image to get used with the ScriptCollection.</text>
+    </g>
+    <g class="entity" data-qualified-name="SCGitHubRunner" id="ent0004" data-source-line="10">
+      <rect x="874.99" y="44.297" width="157.893" height="46.297" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" rx="2.5" ry="2.5" />
+      <rect x="1012.883" y="49.297" width="15" height="10" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" />
+      <rect x="1010.883" y="51.297" width="4" height="2" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" />
+      <rect x="1010.883" y="55.297" width="4" height="2" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" />
+      <text x="889.99" y="77.292" fill="#000" font-size="14" textLength="117.893" font-family="'DejaVu Sans'">SCGitHubRunner</text>
+    </g>
+    <g class="entity" data-qualified-name="SCGitHubRunnerNote" id="ent0005" data-source-line="12">
+      <path d="M504.81,150.597 L504.81,175.73 A0,0 0 0 0 504.81,175.73 L1403.056,175.73 A0,0 0 0 0 1403.056,175.73 L1403.056,160.597 L1393.056,150.597 L957.93,150.597 L953.93,90.657 L949.93,150.597 L504.81,150.597 A0,0 0 0 0 504.81,150.597" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD" />
+      <path d="M1393.056,150.597 L1393.056,160.597 L1403.056,160.597 L1393.056,150.597" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD" />
+      <text x="510.81" y="167.664" fill="#000" font-size="13" textLength="877.246" font-family="'DejaVu Sans'">SCGitHubRunner is a slim, self-hosted GitHub-Actions-runner image that starts job-containers and keeps their externals host-identical.</text>
+    </g>
+    <g class="entity" data-qualified-name="SCTaskRunnerAndroid" id="ent0007" data-source-line="16">
+      <rect x="2268.76" y="44.297" width="196.345" height="46.297" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" rx="2.5" ry="2.5" />
+      <rect x="2445.105" y="49.297" width="15" height="10" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" />
+      <rect x="2443.105" y="51.297" width="4" height="2" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" />
+      <rect x="2443.105" y="55.297" width="4" height="2" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" />
+      <text x="2283.76" y="77.292" fill="#000" font-size="14" textLength="156.345" font-family="'DejaVu Sans'">SCTaskRunnerAndroid</text>
+    </g>
+    <g class="entity" data-qualified-name="SCTaskRunnerAndroidNote" id="ent0008" data-source-line="18">
+      <path d="M1437.62,150.597 L1437.62,175.73 A0,0 0 0 0 1437.62,175.73 L3296.247,175.73 A0,0 0 0 0 3296.247,175.73 L3296.247,160.597 L3286.247,150.597 L2370.93,150.597 L2366.93,90.657 L2362.93,150.597 L1437.62,150.597 A0,0 0 0 0 1437.62,150.597" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD" />
+      <path d="M3286.247,150.597 L3286.247,160.597 L3296.247,160.597 L3286.247,150.597" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD" />
+      <text x="1443.62" y="167.664" fill="#000" font-size="13" textLength="1837.627" font-family="'DejaVu Sans'">SCTaskRunnerAndroid is a container-image that provides an HTTP-server which builds Android-app build-steps (e.g. flutter appbundle-builds) on behalf of remote clients (see ScriptCollection's TFCPS_RemoteBuild), using the Android-SDK/NDK/Flutter-toolchain bundled in this image.</text>
+    </g>
+    <g class="entity" data-qualified-name="SCTaskRunnerIOS" id="ent0010" data-source-line="22">
+      <rect x="3897.96" y="44.297" width="165.945" height="46.297" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" rx="2.5" ry="2.5" />
+      <rect x="4043.905" y="49.297" width="15" height="10" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" />
+      <rect x="4041.905" y="51.297" width="4" height="2" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" />
+      <rect x="4041.905" y="55.297" width="4" height="2" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" />
+      <text x="3912.96" y="77.292" fill="#000" font-size="14" textLength="125.945" font-family="'DejaVu Sans'">SCTaskRunnerIOS</text>
+    </g>
+    <g class="entity" data-qualified-name="SCTaskRunnerIOSNote" id="ent0011" data-source-line="24">
+      <path d="M3331.7,150.597 L3331.7,175.73 A0,0 0 0 0 3331.7,175.73 L4630.172,175.73 A0,0 0 0 0 4630.172,175.73 L4630.172,160.597 L4620.172,150.597 L3984.93,150.597 L3980.93,90.657 L3976.93,150.597 L3331.7,150.597 A0,0 0 0 0 3331.7,150.597" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD" />
+      <path d="M4620.172,150.597 L4620.172,160.597 L4630.172,160.597 L4620.172,150.597" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD" />
+      <text x="3337.7" y="167.664" fill="#000" font-size="13" textLength="1277.472" font-family="'DejaVu Sans'">SCTaskRunnerIOS provides an HTTP-server that builds iOS-app build-steps (e.g. flutter ios-builds) natively on a macOS-host on behalf of remote clients (see ScriptCollection's TFCPS_RemoteBuild).</text>
+    </g>
+    <g class="entity" data-qualified-name="SCTaskRunnerMacOS" id="ent0013" data-source-line="28">
+      <rect x="5703.85" y="44.297" width="190.172" height="46.297" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" rx="2.5" ry="2.5" />
+      <rect x="5874.022" y="49.297" width="15" height="10" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" />
+      <rect x="5872.022" y="51.297" width="4" height="2" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" />
+      <rect x="5872.022" y="55.297" width="4" height="2" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" />
+      <text x="5718.85" y="77.292" fill="#000" font-size="14" textLength="150.172" font-family="'DejaVu Sans'">SCTaskRunnerMacOS</text>
+    </g>
+    <g class="entity" data-qualified-name="SCTaskRunnerMacOSNote" id="ent0014" data-source-line="30">
+      <path d="M4664.95,150.597 L4664.95,175.73 A0,0 0 0 0 4664.95,175.73 L6932.906,175.73 A0,0 0 0 0 6932.906,175.73 L6932.906,160.597 L6922.906,150.597 L5802.93,150.597 L5798.93,90.657 L5794.93,150.597 L4664.95,150.597 A0,0 0 0 0 4664.95,150.597" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD" />
+      <path d="M6922.906,150.597 L6922.906,160.597 L6932.906,160.597 L6922.906,150.597" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD" />
+      <text x="4670.95" y="167.664" fill="#000" font-size="13" textLength="2246.956" font-family="'DejaVu Sans'">SCTaskRunnerMacOS provides an HTTP-server that builds operating-system-bound build-steps (e.g. flutter macos-desktop-builds) natively on a macOS-host on behalf of remote clients requiring RunnerOperatingSystem.MacOS (see ScriptCollection's TFCPS_RemoteBuild). iOS-builds delegate to the dedicated SCTaskRunnerIOS-codeunit instead.</text>
+    </g>
+    <g class="entity" data-qualified-name="SCTaskRunnerWindows" id="ent0016" data-source-line="34">
+      <rect x="7612.58" y="44.297" width="204.712" height="46.297" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" rx="2.5" ry="2.5" />
+      <rect x="7797.292" y="49.297" width="15" height="10" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" />
+      <rect x="7795.292" y="51.297" width="4" height="2" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" />
+      <rect x="7795.292" y="55.297" width="4" height="2" fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;" />
+      <text x="7627.58" y="77.292" fill="#000" font-size="14" textLength="164.712" font-family="'DejaVu Sans'">SCTaskRunnerWindows</text>
+    </g>
+    <g class="entity" data-qualified-name="SCTaskRunnerWindowsNote" id="ent0017" data-source-line="36">
+      <path d="M6968.41,150.597 L6968.41,175.73 A0,0 0 0 0 6968.41,175.73 L8461.463,175.73 A0,0 0 0 0 8461.463,175.73 L8461.463,160.597 L8451.463,150.597 L7718.93,150.597 L7714.93,90.657 L7710.93,150.597 L6968.41,150.597 A0,0 0 0 0 6968.41,150.597" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD" />
+      <path d="M8451.463,150.597 L8451.463,160.597 L8461.463,160.597 L8451.463,150.597" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD" />
+      <text x="6974.41" y="167.664" fill="#000" font-size="13" textLength="1472.053" font-family="'DejaVu Sans'">SCTaskRunnerWindows provides an HTTP-server that builds operating-system-bound build-steps (e.g. flutter windows-builds) natively on a Windows-host on behalf of remote clients (see ScriptCollection's TFCPS_RemoteBuild).</text>
+    </g>
   </g>
 </svg>
