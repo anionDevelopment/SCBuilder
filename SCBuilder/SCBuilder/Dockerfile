@@ -14,6 +14,10 @@ ARG NodeVersion
 # known to work. Not every published build does: 150.0.7871.46-1~deb13u1 for example terminated with SIGTRAP directly
 # during the startup, which made every karma-testrun fail with "Cannot start ChromeHeadless". Raise this value in that
 # Version.txt only to a build which passes the chromium-smoke-test below.
+# The pin has to be raised whenever debian publishes a new chromium-build: the debian-mirror carries exactly one
+# chromium-version per suite, so a superseded version is removed permanently (it only remains on snapshot.debian.org)
+# and apt then fails with "E: Version '<pinned version>' for 'chromium' was not found". The current version of the suite
+# of the base-image is listed at https://packages.debian.org/chromium.
 ARG ChromiumVersion
 ARG DotNetSdkVersion
 ARG EpewVersion

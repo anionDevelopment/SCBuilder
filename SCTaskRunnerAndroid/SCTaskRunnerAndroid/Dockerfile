@@ -3,8 +3,8 @@ FROM ${image_debian}
 ARG CodeUnitVersion
 ARG PipIndexUrlArguments
 # System-JDK: required by the Android-Gradle-Plugin (the toolchain flutter's "appbundle"-build uses). Pinned the same way
-# as SCBuilder pins it (see Other/Resources/Dependencies/JDK/Version.txt): the exact build (JavaBuildVersion, e.g.
-# "25.0.4_7") and its major (JavaVersion, e.g. "25") are both passed in by Other/Build/Build.py.
+# as SCBuilder pins it (see Other/Resources/Dependencies/JRE/Version.txt): the exact build (JavaBuildVersion, e.g.
+# "21.0.6+7") and its major (JavaVersion, e.g. "21") are both passed in by Other/Build/Build.py.
 ARG JavaVersion
 ARG JavaBuildVersion
 # Temurin-architecture-token for the platform the image is built for (x64 or aarch64).
