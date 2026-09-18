@@ -2,6 +2,9 @@ import os
 from ScriptCollection.TFCPS.SCTaskRunnerServer import SCTaskRunnerServer
 
 
+version = "1.2.14"
+__version__ = version
+
 def main() -> None:
     """Starts the Android-task-runner. It builds Android-app build-steps (e.g. flutter appbundle-builds) on behalf of
     remote clients (see ScriptCollection's TFCPS_RemoteBuild), using the Flutter-/Android-SDK-/NDK-toolchain that is
