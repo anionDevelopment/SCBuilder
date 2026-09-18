@@ -232,7 +232,15 @@ class Updater:
         self.__update_npm_dependency("Eslint", "eslint")
 
     def __update_dependency_flutter(self):
-        self.__update_dependency("Flutter", self.__get_available_versions_of_flutter())
+        # Not updated here: this image is not the only environment which builds a flutter-codeunit. The
+        # android-target of such a codeunit is built on the android-task-runner (see the SCTaskRunnerAndroid-codeunit
+        # of this repository, which pins the same version), everything else on the machine of the developer or of the
+        # build-agent, and a flutter-package states in its "pubspec.yaml" which Dart-SDK it is built with. An
+        # environment whose flutter differs from the others therefore either can not resolve the packages at all or
+        # produces screenshots which do not match the checked-in baseline-images of the visual-regression-tests. The
+        # version is raised by hand - here, in SCTaskRunnerAndroid and on the machines of the developers together - so
+        # that it can not drift apart environment by environment, depending on where the update ran last.
+        pass
 
     def __update_dependency_geminicli(self):
         self.__update_npm_dependency("GeminiCli", "@google/gemini-cli")

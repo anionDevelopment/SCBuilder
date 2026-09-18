@@ -63,10 +63,13 @@ RUN git clone https://github.com/flutter/flutter.git -b ${FlutterVersion} --dept
 #AndroidCmdlineToolsVersion (see Other/Resources/Dependencies/AndroidCmdlineTools/Version.txt); the platform-,
 #build-tools- and ndk-versions (AndroidPlatformVersion/AndroidBuildToolsVersion/AndroidNdkVersion, see the sibling
 #Dependencies-folders) are pre-installed too, so a build does not have to download them (several hundred MB to a few GB)
-#on every job. They were determined empirically by running a Flutter-android-build with the pinned FlutterVersion and
-#reading which packages the Flutter-Gradle-plugin then auto-downloaded - they have to be re-determined the same way and
-#re-pinned here whenever FlutterVersion is bumped, because the Flutter-Gradle-plugin picks its
-#compileSdkVersion/targetSdkVersion/ndkVersion itself and changes them with (nearly) every Flutter-release.
+#on every job. The Flutter-Gradle-plugin picks the compileSdkVersion, the targetSdkVersion and the ndkVersion of an app
+#itself and changes them from Flutter-release to Flutter-release, so both pins have to be checked whenever
+#FlutterVersion is bumped. They do not have to be determined by running a build for it: the plugin states them in
+#"packages/flutter_tools/gradle/src/main/kotlin/FlutterExtension.kt" of the flutter-repository, where "compileSdkVersion"
+#is the platform-version to pin here and "ndkVersion" is the ndk-version (checked for 3.47.4, which states 36 and
+#28.2.13676358). The build-tools-version is not stated by flutter: it is the one the Android-Gradle-plugin of the built
+#app asks for, so it follows that plugin and not the Flutter-release.
 #The SDK-licenses are accepted regardless (accepting them otherwise needs an interactive confirmation) and
 #$ANDROID_HOME stays writable, so the Android-Gradle-Plugin's own SDK-auto-download still covers any further package a
 #future Flutter-bump needs before this pin is updated - the pre-install here is a cache, not a hard requirement.
