@@ -21,6 +21,7 @@ def build():
         "image_debian":tf.tfcps_Tools_General.oci_image_manager.get_registry_address_for_image_with_default_tag(tf.get_repository_folder(),"Debian"),
         "JavaVersion":java_build_version.split(".")[0],
         "JavaBuildVersion":java_build_version,
+        "KotlinVersion":dependency_version("Kotlin"),
         "NodeVersion":dependency_version("Node"),
         "ChromiumVersion":dependency_version("Chromium"),
         "GoVersion":dependency_version("Go"),

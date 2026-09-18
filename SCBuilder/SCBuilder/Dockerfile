@@ -8,6 +8,7 @@ ARG PlatformForGoVersion
 ARG JavaVersion
 ARG JavaBuildVersion
 ARG PlatformForJavaVersion=x64
+ARG KotlinVersion
 ARG NodeVersion
 # Exact debian-package-version of chromium (used for the headless browser-based frontend-tests), passed in from
 # Other/Resources/Dependencies/Chromium/Version.txt. Pinned so that the image always contains a chromium-build which is
@@ -84,6 +85,21 @@ RUN JAVA_ASSET_VERSION="$(echo "${JavaBuildVersion}" | tr '+' '_')" && \
 ENV JAVA_HOME="/usr/local/java"
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 ENV ISRUNNINGINBUILDCONTAINER="true"
+
+#install the kotlin-compiler. It is installed from the official release-artifact of JetBrains/kotlin and not from the
+#debian-package "kotlin", although that package exists: debian still ships kotlin 1.3.31 there, which is several
+#major-versions behind the current compiler, and the debian-mirrors do not allow an exact version-pin anyway (the same
+#reason which is documented for the cli-tools below). The artifact contains the compiler as jvm-application and is
+#therefore architecture-independent; it is run by the java installed above. The version is pinned via the
+#KotlinVersion-build-argument, see Other/Resources/Dependencies/Kotlin/Version.txt.
+#The archive contains the folder "kotlinc", so unpacking it into /usr/local yields /usr/local/kotlinc.
+#The compiler is called once at the end, so a broken or wrongly-named artifact lets the image-build fail instead of
+#failing the pipeline of a consuming repository.
+RUN curl -fsSL "https://github.com/JetBrains/kotlin/releases/download/v${KotlinVersion}/kotlin-compiler-${KotlinVersion}.zip" -o /tmp/kotlin.zip && \
+    unzip -q /tmp/kotlin.zip -d /usr/local && \
+    rm /tmp/kotlin.zip && \
+    /usr/local/kotlinc/bin/kotlinc -version
+ENV PATH="/usr/local/kotlinc/bin:${PATH}"
 
 #install dotnet
 RUN wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \

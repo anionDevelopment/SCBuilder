@@ -278,6 +278,9 @@ class Updater:
     def __update_dependency_jq(self):
         self.__update_github_dependency("Jq", "jqlang/jq", "jq-")
 
+    def __update_dependency_kotlin(self):
+        self.__update_github_dependency("Kotlin", "JetBrains/kotlin", "v")
+
     def __update_dependency_kubectl(self):
         self.__update_github_dependency("Kubectl", "kubernetes/kubernetes", "v")
 
@@ -366,6 +369,7 @@ class Updater:
         self.__update_dependency_helm()
         self.__update_dependency_jdk()
         self.__update_dependency_jq()
+        self.__update_dependency_kotlin()
         self.__update_dependency_kubectl()
         self.__update_dependency_kustomize()
         self.__update_dependency_mistralvibe()
