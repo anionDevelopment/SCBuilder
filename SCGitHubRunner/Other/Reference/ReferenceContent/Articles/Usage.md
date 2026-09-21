@@ -74,7 +74,10 @@ So **container-jobs, service-containers (`services:`), the tool-cache, `actions/
 
 ## Container-hooks
 
-SCGitHubRunner bundles the official [docker container-hook](https://github.com/actions/runner-container-hooks) and sets `ACTIONS_RUNNER_CONTAINER_HOOKS` to a thin wrapper around it (`PrepareJobMountHook.js`), so every job-container this runner starts goes through it - this is what makes `SCRIPTCOLLECTION_CONFIGURATION_FOLDER` (see the table above) work without a repository having to add a mount to its own workflow. The wrapper only inspects the `prepare_job`-command and otherwise delegates unchanged to the wrapped hook, so it does not change the runner's behavior for a repository which does not use `SCRIPTCOLLECTION_CONFIGURATION_FOLDER`.
+SCGitHubRunner bundles the official [docker container-hook](https://github.com/actions/runner-container-hooks) and sets `ACTIONS_RUNNER_CONTAINER_HOOKS` to a thin wrapper around it (`PrepareJobMountHook.js`), so every job-container this runner starts goes through it. The wrapper only inspects the `prepare_job`-command, changes two things about the job-container and otherwise delegates unchanged to the wrapped hook:
+
+- it adds the mount which `SCRIPTCOLLECTION_CONFIGURATION_FOLDER` (see the table above) configures, if that variable is set,
+- it sets `IS_RUNNING_IN_SERVER_PIPELINE=true`, unconditionally: every job this runner starts is a pipeline-job on a build-server, and a build uses that to skip preparation-steps which only make sense on a developer-machine. A pipeline-definition usually sets this itself, but setting it here too makes it independent of how old the workflow-file of the built repository is. A job-container does not inherit the environment of this runner-container, which is why it has to be set where the job-container is created.
 
 ```yaml
 services:
