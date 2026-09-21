@@ -2,6 +2,7 @@ ARG image_debian
 FROM ${image_debian}
 ARG CodeUnitVersion
 ARG GitHubRunnerVersion
+ARG ContainerHooksDockerVersion
 # TargetArch is the actions-runner archive-suffix ("x64" for amd64, "arm64" for arm64).
 ARG TargetArch=x64
 LABEL version=${CodeUnitVersion}
@@ -37,6 +38,19 @@ RUN mkdir -p /opt/runner-template && \
     rm runner.tar.gz && \
     ./bin/installdependencies.sh && \
     rm -rf /var/lib/apt/lists/*
+
+#container-hooks: lets ACTIONS_RUNNER_CONTAINER_HOOKS (set below) customize how the runner creates a job-container,
+#without a repository having to change its workflow. The official docker-hook-implementation is downloaded as-is
+#(runner-agent already provides the node20 it is executed with, see /opt/runner-template above) and PrepareJobMountHook.js
+#wraps it: it only adds a mount (configured via SCRIPTCOLLECTION_CONFIGURATION_FOLDER, see Usage.md) and
+#otherwise behaves exactly like the wrapped hook.
+RUN mkdir -p /opt/container-hooks/docker && \
+    cd /opt/container-hooks/docker && \
+    curl -fL -o hooks.zip "https://github.com/actions/runner-container-hooks/releases/download/v${ContainerHooksDockerVersion}/actions-runner-hooks-docker-${ContainerHooksDockerVersion}.zip" && \
+    unzip -q hooks.zip && \
+    rm hooks.zip
+COPY SCGitHubRunner/ContainerHooks/PrepareJobMountHook.js /opt/container-hooks/PrepareJobMountHook.js
+ENV ACTIONS_RUNNER_CONTAINER_HOOKS="/opt/container-hooks/PrepareJobMountHook.js"
 
 COPY SCGitHubRunner/EntryPoint.sh /EntryPoint.sh
 RUN chmod +x /EntryPoint.sh

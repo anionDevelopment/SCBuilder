@@ -95,11 +95,15 @@ jobs:
 
 `actions/checkout` must now run through without the `/__e/node20/bin/node: no such file or directory` error.
 
-## 8. Add more runners
+## 8. Optional: make the ScriptCollection-configuration-folder available to builds
+
+If the repositories built on this runner use ScriptCollection and declare required environment-variables (see `BuildRunnerConfiguration.md` in the ScriptCollection-repository), set `SCRIPTCOLLECTION_CONFIGURATION_FOLDER` to the host-absolute path of the configuration-folder (the one containing `TFCPS/EnvironmentVariables.csv`) in the runner's `environment:`. SCGitHubRunner then mounts it read-only into every job-container it starts, so `scbuildcodeunits` resolves the values exactly like it does on the host. See [Container-hooks](./Usage.md#container-hooks) for details and for how to scope this to one runner only.
+
+## 9. Add more runners
 
 Copy the service-block, give it a unique `RUNNER_NAME`, `RUNNER_HOME` and host-identical volume (e.g. `/Workspace/Other/Runner/MyRunner2`). Any number of runners can run in parallel because each owns its own directory.
 
-## 9. Decommission a previous runner
+## 10. Decommission a previous runner
 
 When replacing an old runner (e.g. a `myoung34/github-runner`):
 
@@ -109,7 +113,7 @@ docker compose -f <old-compose> down
 
 Then remove it in GitHub (Org → Settings → Actions → Runners → *Remove*), especially if the new runner reuses the same name. (With `--replace`, SCGitHubRunner re-registers a same-named runner automatically.)
 
-## 10. Updating
+## 11. Updating
 
 - **Runner-agent**: bump `GitHubRunner/Version.txt`, rebuild the image, then on the host `docker compose pull && docker compose up -d`. The host-`RUNNER_HOME` keeps the old binaries until you let the new container repopulate it (remove the binaries in `RUNNER_HOME` or use a fresh directory if you want a clean upgrade).
 - **Job-image (scbuilder)**: just change the `container.image` tag in the workflow.

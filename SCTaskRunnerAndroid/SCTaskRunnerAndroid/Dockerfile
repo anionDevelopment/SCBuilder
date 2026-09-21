@@ -26,7 +26,9 @@ ENV ISRUNNINGINCONTAINER="true"
 RUN mkdir /Workspace && \
     mkdir /Workspace/Tools && \
     apt-get update && \
-    apt-get install -y ca-certificates curl git unzip python3 python3-pip python3-venv && \
+    apt-get install -y ca-certificates curl git unzip python3 python3-pip python3-venv ripgrep fd-find bat tree less vim && \
+    ln -s /usr/bin/fdfind /usr/local/bin/fd && \
+    ln -s /usr/bin/batcat /usr/local/bin/bat && \
     rm -rf /var/lib/apt/lists/*
 
 #the download-caches of gradle and pub are placed in an explicit folder-tree instead of wherever the tools would put them
