@@ -204,6 +204,9 @@ class Updater:
     def __update_dependency_codex(self):
         self.__update_npm_dependency("Codex", "@openai/codex")
 
+    def __update_dependency_codespell(self):
+        self.__update_pypi_dependency("Codespell", "codespell")
+
     def __update_dependency_copilot(self):
         self.__update_npm_dependency("Copilot", "@github/copilot")
 
@@ -349,6 +352,7 @@ class Updater:
         self.__update_dependency_chromium()
         self.__update_dependency_claude()
         self.__update_dependency_codex()
+        self.__update_dependency_codespell()
         self.__update_dependency_copilot()
         self.__update_dependency_cyclonedx()
         self.__update_dependency_cyclonedxnpm()

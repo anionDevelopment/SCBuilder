@@ -45,6 +45,7 @@ ARG GulpCliVersion
 ARG JqVersion
 ARG YqVersion
 ARG ShellCheckVersion
+ARG CodespellVersion
 ARG GitLfsVersion
 ARG GitHubCliVersion
 ARG GitLabCliVersion
@@ -309,6 +310,12 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir ${PipIndexUrlArguments} scriptcollection==${ScriptCollectionVersion}
+
+#install codespell (spell-checker for source-code). The version is pinned via the CodespellVersion-build-argument, see
+#Other/Resources/Dependencies/Codespell/Version.txt. codespell is called once at the end, so a broken install lets the
+#image-build fail instead of failing the pipeline of a consuming repository.
+RUN pip install --no-cache-dir ${PipIndexUrlArguments} codespell==${CodespellVersion} && \
+    codespell --version
 
 # install ai-related things. Every tool is pinned via the corresponding Other/Resources/Dependencies/<Tool>/Version.txt-file,
 # analog to the other tools of this image.

@@ -50,6 +50,7 @@ def build():
         "JqVersion":dependency_version("Jq"),
         "YqVersion":dependency_version("Yq"),
         "ShellCheckVersion":dependency_version("ShellCheck"),
+        "CodespellVersion":dependency_version("Codespell"),
         "GitLfsVersion":dependency_version("GitLfs"),
         "GitHubCliVersion":dependency_version("GitHubCli"),
         "GitLabCliVersion":dependency_version("GitLabCli"),
