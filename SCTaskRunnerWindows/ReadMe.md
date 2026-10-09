@@ -26,8 +26,8 @@ is read from environment-variables:
 
 | Variable | Meaning | Default |
 |---|---|---|
-| `SCTaskRunner_Username` | Basic-auth-username the clients must use | (empty) |
-| `SCTaskRunner_Password` | Basic-auth-password the clients must use | (empty) |
+| `SCTaskRunner_Username` | Basic-auth-username the clients must use | (none, required) |
+| `SCTaskRunner_Password` | Basic-auth-password the clients must use | (none, required) |
 | `SCTaskRunner_Port` | TCP-port to listen on | `8080` |
 
 ```

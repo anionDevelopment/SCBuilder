@@ -19,15 +19,15 @@ runner. Note the absolute path of the command (e.g. via `which sctaskrunnermacos
 
 | Variable | Meaning | Default |
 |---|---|---|
-| `SCTaskRunner_Username` | Basic-auth-username the clients must use | (empty) |
-| `SCTaskRunner_Password` | Basic-auth-password the clients must use | (empty) |
+| `SCTaskRunner_Username` | Basic-auth-username the clients must use | (none, required) |
+| `SCTaskRunner_Password` | Basic-auth-password the clients must use | (none, required) |
 | `SCTaskRunner_Port` | TCP-port to listen on | `8080` |
 | `SCTaskRunner_CertificateFile` | Path to the TLS-certificate-file | (none) |
 | `SCTaskRunner_CertificateKeyFile` | Path to the TLS-certificate-key-file | (none) |
 
 When both `SCTaskRunner_CertificateFile` and `SCTaskRunner_CertificateKeyFile` are set, the runner is served over **TLS
-(https)** directly. Otherwise it is served over plain http - use this when TLS is terminated by a reverse-proxy in front of
-the runner instead.
+(https)** directly. When none of them is set, it is served over plain http - use this when TLS is terminated by a
+reverse-proxy in front of the runner instead. Setting only one of them lets the start of the runner fail.
 
 ## 4. Run as a background-service (launchd)
 
