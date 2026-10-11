@@ -7,10 +7,8 @@ ARG GoVersion
 ARG PlatformForGoVersion
 ARG JavaVersion
 ARG JavaBuildVersion
-ARG PlatformForJavaVersion=x64
 ARG KotlinVersion
 ARG NodeVersion
-ARG PlatformForNodeVersion=x64
 # Exact debian-package-version of chromium (used for the headless browser-based frontend-tests), passed in from
 # Other/Resources/Dependencies/Chromium/Version.txt. Pinned so that the image always contains a chromium-build which is
 # known to work. Not every published build does: 150.0.7871.46-1~deb13u1 for example terminated with SIGTRAP directly
@@ -79,8 +77,11 @@ RUN mkdir /Workspace && \
 
 #install java (Eclipse-Temurin). Installed from the Temurin-tarball (like Go) instead of the Debian-openjdk-apt-package so
 #the exact build can be pinned. This is the system-JDK used by maven and other JVM-tooling;
-RUN JAVA_ASSET_VERSION="$(echo "${JavaBuildVersion}" | tr '+' '_')" && \
-    curl -fsSL "https://github.com/adoptium/temurin${JavaVersion}-binaries/releases/download/jdk-${JavaBuildVersion}/OpenJDK${JavaVersion}U-jdk_${PlatformForJavaVersion}_linux_hotspot_${JAVA_ASSET_VERSION}.tar.gz" -o /tmp/java.tar.gz && \
+#The architecture-token of temurin (x64/aarch64) is determined at build-time from the one of debian (amd64/arm64), so the
+#instruction works for every platform this image is built for; an unsupported architecture lets the image-build fail.
+RUN case "$(dpkg --print-architecture)" in amd64) JAVA_ARCHITECTURE="x64" ;; arm64) JAVA_ARCHITECTURE="aarch64" ;; *) echo "Unsupported architecture for java: $(dpkg --print-architecture)" >&2 && exit 1 ;; esac && \
+    JAVA_ASSET_VERSION="$(echo "${JavaBuildVersion}" | tr '+' '_')" && \
+    curl -fsSL "https://github.com/adoptium/temurin${JavaVersion}-binaries/releases/download/jdk-${JavaBuildVersion}/OpenJDK${JavaVersion}U-jdk_${JAVA_ARCHITECTURE}_linux_hotspot_${JAVA_ASSET_VERSION}.tar.gz" -o /tmp/java.tar.gz && \
     mkdir -p /usr/local/java && \
     tar -C /usr/local/java --strip-components=1 -xzf /tmp/java.tar.gz && \
     rm /tmp/java.tar.gz
@@ -135,9 +136,12 @@ RUN /root/.cargo/bin/rustup toolchain install ${RustVersion} && \
 #install node. Installed from the official release-tarball of nodejs.org (like Go and Java) instead of the
 #NodeSource-apt-repository so the exact version can be pinned via the NodeVersion-build-argument, see
 #Other/Resources/Dependencies/Node/Version.txt. npm and npx are part of the tarball.
+#The architecture-token of nodejs.org (x64/arm64) is determined at build-time from the one of debian (amd64/arm64), so the
+#instruction works for every platform this image is built for; an unsupported architecture lets the image-build fail.
 #node is called once at the end, so a broken or wrongly-named artifact lets the image-build fail instead of failing the
 #pipeline of a consuming repository.
-RUN curl -fsSL "https://nodejs.org/dist/v${NodeVersion}/node-v${NodeVersion}-linux-${PlatformForNodeVersion}.tar.xz" -o /tmp/node.tar.xz && \
+RUN case "$(dpkg --print-architecture)" in amd64) NODE_ARCHITECTURE="x64" ;; arm64) NODE_ARCHITECTURE="arm64" ;; *) echo "Unsupported architecture for node: $(dpkg --print-architecture)" >&2 && exit 1 ;; esac && \
+    curl -fsSL "https://nodejs.org/dist/v${NodeVersion}/node-v${NodeVersion}-linux-${NODE_ARCHITECTURE}.tar.xz" -o /tmp/node.tar.xz && \
     mkdir -p /usr/local/node && \
     tar -C /usr/local/node --strip-components=1 -xJf /tmp/node.tar.xz && \
     rm /tmp/node.tar.xz && \
