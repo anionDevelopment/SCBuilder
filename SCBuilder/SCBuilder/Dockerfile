@@ -10,6 +10,7 @@ ARG JavaBuildVersion
 ARG PlatformForJavaVersion=x64
 ARG KotlinVersion
 ARG NodeVersion
+ARG PlatformForNodeVersion=x64
 # Exact debian-package-version of chromium (used for the headless browser-based frontend-tests), passed in from
 # Other/Resources/Dependencies/Chromium/Version.txt. Pinned so that the image always contains a chromium-build which is
 # known to work. Not every published build does: 150.0.7871.46-1~deb13u1 for example terminated with SIGTRAP directly
@@ -131,10 +132,17 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 RUN /root/.cargo/bin/rustup toolchain install ${RustVersion} && \
     /root/.cargo/bin/rustup default ${RustVersion}
 
-#install node (version configurable via the NodeVersion build-arg; npm is included in the NodeSource nodejs-package)
-RUN curl -fsSL https://deb.nodesource.com/setup_${NodeVersion}.x | bash - && \
-    apt-get install -y nodejs && \
-    rm -rf /var/lib/apt/lists/*
+#install node. Installed from the official release-tarball of nodejs.org (like Go and Java) instead of the
+#NodeSource-apt-repository so the exact version can be pinned via the NodeVersion-build-argument, see
+#Other/Resources/Dependencies/Node/Version.txt. npm and npx are part of the tarball.
+#node is called once at the end, so a broken or wrongly-named artifact lets the image-build fail instead of failing the
+#pipeline of a consuming repository.
+RUN curl -fsSL "https://nodejs.org/dist/v${NodeVersion}/node-v${NodeVersion}-linux-${PlatformForNodeVersion}.tar.xz" -o /tmp/node.tar.xz && \
+    mkdir -p /usr/local/node && \
+    tar -C /usr/local/node --strip-components=1 -xJf /tmp/node.tar.xz && \
+    rm /tmp/node.tar.xz && \
+    /usr/local/node/bin/node --version
+ENV PATH="/usr/local/node/bin:${PATH}"
 
 #install angular-cli
 RUN npm install -g @angular/cli@${AngularCliVersion} && \

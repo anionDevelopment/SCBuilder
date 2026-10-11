@@ -115,6 +115,16 @@ class Updater:
         return [release["version"] for release in answer["releases"] if release["channel"] == "stable" and re.match(r"^\d+\.\d+\.\d+$", release["version"]) is not None]
 
     @GeneralUtilities.check_arguments
+    def __get_available_versions_of_node(self) -> list[str]:
+        """Returns the versions which node released.
+
+        The release-index of nodejs.org is asked and not the tags of the github-project: that project has far more tags
+        than the pages of tags which are read hold, and the index is additionally the list of the releases the tarball
+        of the image is downloaded from. The index states each version with the prefix "v", which is removed here."""
+        answer = self.__load_json("https://nodejs.org/dist/index.json")
+        return [release["version"][1:] for release in answer if re.match(r"^v\d+\.\d+\.\d+$", release["version"]) is not None]
+
+    @GeneralUtilities.check_arguments
     def __get_available_versions_of_nuget_package(self, package_id: str) -> list[str]:
         """Returns the released versions of the given nuget-package.
 
@@ -294,9 +304,7 @@ class Updater:
         self.__update_pypi_dependency("MistralVibe", "mistral-vibe")
 
     def __update_dependency_node(self):
-        # Not updated here: the pinned value ("22") is the major-version which the nodesource-setup-script
-        # expects, and a new major-version is taken over deliberately (see the echolon above).
-        pass
+        self.__update_dependency("Node", self.__get_available_versions_of_node())
 
     def __update_dependency_opencode(self):
         self.__update_npm_dependency("OpenCode", "opencode-ai")
