@@ -85,6 +85,21 @@ ENV JAVA_HOME="/usr/local/java"
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 ENV ISRUNNINGINBUILDCONTAINER="true"
 
+#install ca-certificates-java so that the JVM honors the system-wide trust-store. The TrustedRootCA-mechanism of ScriptCollection
+#(see the article "TrustedRootCAs" of its reference, respectively TFCPS_CodeUnit_BuildCodeUnits.__collect_trusted_root_ca_arguments
+#and SCBuilder/EntryPoint.sh) writes host-provided root-CA-certificates into /usr/local/share/ca-certificates/ at container-start and
+#then runs "update-ca-certificates". ca-certificates-java installs the update-hook /etc/ca-certificates/update.d/jks-keystore which
+#that run triggers, so the injected CAs end up in the shared JKS at /etc/ssl/certs/java/cacerts. Temurin was installed above into
+#/usr/local/java and ships its own cacerts under $JAVA_HOME/lib/security/cacerts; we replace that file by a symlink to the shared
+#location so Temurin reads the shared JKS transparently and no second mechanism is required for the JVM. The symlink is created
+#before the apt-install so that the postinst-script of ca-certificates-java populates the keystore against Temurin from the start.
+#JAVA_HOME and PATH are already set above, so the postinst can resolve "java"/"keytool" via Temurin.
+RUN rm -f "${JAVA_HOME}/lib/security/cacerts" && \
+    ln -sf /etc/ssl/certs/java/cacerts "${JAVA_HOME}/lib/security/cacerts" && \
+    apt-get update && \
+    apt-get install -y ca-certificates-java && \
+    rm -rf /var/lib/apt/lists/*
+
 #install dotnet
 RUN wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
     dpkg -i packages-microsoft-prod.deb && \
