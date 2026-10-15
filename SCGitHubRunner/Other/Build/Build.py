@@ -10,10 +10,13 @@ def build():
             #Platform.Linux_ARM64,
     ]
     tf:TFCPS_CodeUnitSpecific_Docker_Functions=TFCPS_CodeUnitSpecific_Docker_CLI.parse(__file__)
-    github_runner_version=tf.tfcps_Tools_General.get_dependency_version_in_resources_folder(os.path.join(tf.get_codeunit_folder(),"Other","Resources"),"GitHubRunner")
+    resources_folder=os.path.join(tf.get_codeunit_folder(),"Other","Resources")
+    github_runner_version=tf.tfcps_Tools_General.get_dependency_version_in_resources_folder(resources_folder,"GitHubRunner")
+    container_hooks_docker_version=tf.tfcps_Tools_General.get_dependency_version_in_resources_folder(resources_folder,"ContainerHooksDocker")
     tf.build(platforms,{
         "image_debian":tf.tfcps_Tools_General.oci_image_manager.get_registry_address_for_image_with_default_tag(tf.get_repository_folder(),"Debian"),
         "GitHubRunnerVersion":github_runner_version,
+        "ContainerHooksDockerVersion":container_hooks_docker_version,
     })
 
 

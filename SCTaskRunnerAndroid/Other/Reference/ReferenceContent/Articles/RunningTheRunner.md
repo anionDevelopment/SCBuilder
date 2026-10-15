@@ -8,8 +8,8 @@ is meant to run as a **permanently-running container** that waits for jobs sent 
 
 | Variable | Meaning | Default |
 |---|---|---|
-| `SCTaskRunner_Username` | Basic-auth-username the clients must use | (empty) |
-| `SCTaskRunner_Password` | Basic-auth-password the clients must use | (empty) |
+| `SCTaskRunner_Username` | Basic-auth-username the clients must use | (none, required) |
+| `SCTaskRunner_Password` | Basic-auth-password the clients must use | (none, required) |
 | `SCTaskRunner_Port` | TCP-port to listen on | `8080` |
 | `SCTaskRunner_CertificateFile` | Path to the TLS-certificate-file | (none) |
 | `SCTaskRunner_CertificateKeyFile` | Path to the TLS-certificate-key-file | (none) |
@@ -17,13 +17,13 @@ is meant to run as a **permanently-running container** that waits for jobs sent 
 | `SCTaskRunner_GradleMaxMetaspace` | Maximum metaspace of the gradle-build (see "Memory") | `768m` |
 | `SCTaskRunner_GradleMaxWorkers` | Maximum amount of gradle-worker-processes (see "Memory") | `2` |
 
-`SCTaskRunner_Username` and `SCTaskRunner_Password` must be set. They are compared as one string `<username>:<password>`,
-so leaving them at their (empty) default means that a client which sends exactly `:` as its credentials is accepted, which
-is not a meaningful protection.
+`SCTaskRunner_Username` and `SCTaskRunner_Password` must be set to non-empty values, otherwise the runner does not start.
+They are compared as one string `<username>:<password>`, so empty values would mean that a client which sends exactly `:` as
+its credentials is accepted.
 
 When both `SCTaskRunner_CertificateFile` and `SCTaskRunner_CertificateKeyFile` are set, the runner is served over **TLS
-(https)** directly. Otherwise it is served over plain http - use this when TLS is terminated by a reverse-proxy in front of
-the runner instead.
+(https)** directly. When none of them is set, it is served over plain http - use this when TLS is terminated by a
+reverse-proxy in front of the runner instead. Setting only one of them lets the start of the runner fail.
 
 ## Memory
 

@@ -27,6 +27,8 @@ Common runner-images (`myoung34/github-runner`, the official `actions/runner` im
 | `RUNNER_WORKDIR` | no | Work-directory; relative to `RUNNER_HOME` by default (`_work`). |
 | `EPHEMERAL` | no | `true` registers the runner as ephemeral and deregisters it on exit. |
 | `REMOVE_ON_EXIT` | no | `true` deregisters the runner on container-stop. |
+| `SCRIPTCOLLECTION_CONFIGURATION_FOLDER` | no | Host-absolute path of a ScriptCollection-configuration-folder (containing `TFCPS/EnvironmentVariables.csv`); if set, it is bind-mounted read-only into every job-container this runner starts. See [Container-hooks](#container-hooks) below. |
+| `SCRIPTCOLLECTION_CONFIGURATION_FOLDER_TARGET` | no | Target-path of the mount above inside the job-container. Defaults to `/root/.ScriptCollection` (the SCBuilder-image runs as `root`). |
 
 ## docker-compose
 
@@ -69,6 +71,31 @@ So **container-jobs, service-containers (`services:`), the tool-cache, `actions/
 - **Time zone / locale**: add `TZ: Europe/Berlin` to `environment` for consistent timestamps in logs.
 - **Private CA / corporate proxy**: mount CA-certs and set `HTTP_PROXY`/`HTTPS_PROXY`/`NODE_EXTRA_CA_CERTS` if your network requires it.
 - **Resource-limits**: `cpus`/`mem_limit` (or compose `deploy.resources`) if you want to cap a runner.
+
+## Container-hooks
+
+SCGitHubRunner bundles the official [docker container-hook](https://github.com/actions/runner-container-hooks) and sets `ACTIONS_RUNNER_CONTAINER_HOOKS` to a thin wrapper around it (`PrepareJobMountHook.js`), so every job-container this runner starts goes through it. The wrapper only inspects the `prepare_job`-command, changes two things about the job-container and otherwise delegates unchanged to the wrapped hook:
+
+- it adds the mount which `SCRIPTCOLLECTION_CONFIGURATION_FOLDER` (see the table above) configures, if that variable is set,
+- it sets `IS_RUNNING_IN_SERVER_PIPELINE=true`, unconditionally: every job this runner starts is a pipeline-job on a build-server, and a build uses that to skip preparation-steps which only make sense on a developer-machine. A pipeline-definition usually sets this itself, but setting it here too makes it independent of how old the workflow-file of the built repository is. A job-container does not inherit the environment of this runner-container, which is why it has to be set where the job-container is created.
+
+```yaml
+services:
+  myrunner:
+    image: aniondev/scgithubrunner:v1.0.0
+    environment:
+      # ...ORG_NAME, ACCESS_TOKEN, RUNNER_NAME, LABELS, RUNNER_HOME as above...
+      SCRIPTCOLLECTION_CONFIGURATION_FOLDER: /srv/ScriptCollectionConfiguration
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /Workspace/Other/Runner/MyRunner:/Workspace/Other/Runner/MyRunner
+```
+
+`SCRIPTCOLLECTION_CONFIGURATION_FOLDER` must name the path exactly as it exists **on the runner-host** (the machine running the docker-daemon this runner talks to through the mounted `docker.sock`), the same rule `RUNNER_HOME` already follows - not a path inside this runner-container. Mounting that same folder into the runner-container as well (as described for the docker-executor in the "Build-runner-configuration"-article of the ScriptCollection-repository) is not required for this mechanism (the runner-container itself never reads the folder's content), but is harmless and can help when verifying the setup, for example with `docker compose exec myrunner ls /srv/ScriptCollectionConfiguration`.
+
+To provide credentials for one specific runner only (rather than for every runner on the host), give that runner its own `SCRIPTCOLLECTION_CONFIGURATION_FOLDER` (a folder unique to it, not shared with other runners) instead of changing the image or `PrepareJobMountHook.js`.
+
+If you need to customize a job-container further, replace `PrepareJobMountHook.js` with your own hook (or fork [runner-container-hooks](https://github.com/actions/runner-container-hooks)) and point `ACTIONS_RUNNER_CONTAINER_HOOKS` at it instead, either by building a custom image on top of this one or by overriding the environment-variable in the compose-file.
 
 ## Workflow
 

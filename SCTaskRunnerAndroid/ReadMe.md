@@ -44,8 +44,8 @@ Run the built image as a long-lived container. Configuration is read from enviro
 
 | Variable | Meaning | Default |
 |---|---|---|
-| `SCTaskRunner_Username` | Basic-auth-username the clients must use | (empty) |
-| `SCTaskRunner_Password` | Basic-auth-password the clients must use | (empty) |
+| `SCTaskRunner_Username` | Basic-auth-username the clients must use | (none, required) |
+| `SCTaskRunner_Password` | Basic-auth-password the clients must use | (none, required) |
 | `SCTaskRunner_Port` | TCP-port to listen on | `8080` |
 | `SCTaskRunner_CertificateFile` | Path to the TLS-certificate-file | (none) |
 | `SCTaskRunner_CertificateKeyFile` | Path to the TLS-certificate-key-file | (none) |
@@ -62,8 +62,8 @@ docker run -d --name sctaskrunnerandroid --restart unless-stopped \
 ```
 
 When both `SCTaskRunner_CertificateFile` and `SCTaskRunner_CertificateKeyFile` are set, the runner is served over **TLS
-(https)** directly. Otherwise it is served over plain http - use this when TLS is terminated by a reverse-proxy in front of
-the runner instead.
+(https)** directly. When none of them is set, it is served over plain http - use this when TLS is terminated by a
+reverse-proxy in front of the runner instead. Setting only one of them lets the start of the runner fail.
 
 The three `SCTaskRunner_Gradle*`-variables define how much memory a build may use. They exist because that is a property of
 this container (its memory-limit) and not of the built app: a flutter-project brings a `gradle.properties` asking for 8 GiB

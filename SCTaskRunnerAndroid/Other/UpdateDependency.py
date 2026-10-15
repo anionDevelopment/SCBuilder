@@ -90,7 +90,17 @@ class Updater:
     # in the same order as the "Other/Resources/Dependencies"-folders, analogous to SCBuilder's updater).
 
     def __update_dependency_flutter(self):
-        self.__update_dependency("Flutter", self.__get_available_versions_of_flutter())
+        # Not updated here: this image is not the only environment which builds a flutter-codeunit. Only its
+        # android-target is built here, everything else is built in the SCBuilder-image (which pins the same version)
+        # or on the machine of the developer, and a flutter-package states in its "pubspec.yaml" which Dart-SDK it is
+        # built with. An environment whose flutter differs from the others therefore either can not resolve the
+        # packages at all or produces screenshots which do not match the checked-in baseline-images of the
+        # visual-regression-tests. The version is raised by hand - here, in SCBuilder and on the machines of the
+        # developers together - so that it can not drift apart environment by environment, depending on where the
+        # update ran last. The android-platform- and the ndk-pin below have to be checked in the same step, because
+        # the Flutter-Gradle-plugin picks both of them for an app itself (see the comment below and the one in the
+        # Dockerfile).
+        pass
 
     def __update_dependency_jdk(self):
         # Not updated here: the pinned value ("25.0.4_7") states the build of a temurin-release, which the
@@ -103,10 +113,11 @@ class Updater:
 
     # The four Android-SDK-dependencies (AndroidCmdlineTools/AndroidPlatform/AndroidBuildTools/AndroidNdk) are
     # deliberately not auto-updated, same as they never were in SCBuilder before Android-app-building moved into this
-    # codeunit: there is no reliable "list of available versions"-api for them, so they are determined empirically by
-    # running a Flutter-android-build with the pinned FlutterVersion and reading which packages the
-    # Flutter-Gradle-plugin then auto-downloaded (see the comment in the Dockerfile), and re-pinned here by hand
-    # whenever FlutterVersion is bumped.
+    # codeunit: there is no reliable "list of available versions"-api for them. Which of them an android-build needs is
+    # not a matter of taste either - the platform- and the ndk-version are the ones the Flutter-Gradle-plugin states in
+    # "packages/flutter_tools/gradle/src/main/kotlin/FlutterExtension.kt" ("compileSdkVersion" respectively
+    # "ndkVersion") of the pinned FlutterVersion, so they are read from there and pinned here by hand whenever that
+    # version is bumped (see the comment in the Dockerfile).
 
     def update_dependencies(self):
         self.__update_dependency_flutter()
