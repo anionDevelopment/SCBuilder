@@ -110,9 +110,9 @@ RUN wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod
 ENV PATH="/root/.dotnet/tools:${PATH}"
 
 #install epew
-RUN wget https://github.com/anionDevelopment/Epew/releases/download/v${EpewVersion}/Epew.v${EpewVersion}.Artifacts.zip -O /tmp/epew.zip && \
+RUN wget https://github.com/anionDevelopment/Epew/releases/download/v${EpewVersion}/Epew_Artifacts_v${EpewVersion}.zip -O /tmp/epew.zip && \
     unzip /tmp/epew.zip -d /tmp/epew && \
-    apt-get install -y /tmp/epew/BuildResult_Deb/Epew.deb && \
+    apt-get install -y /tmp/epew/Epew/BuildResult_Deb/Epew.deb && \
     rm -rf /tmp/epew.zip /tmp/epew
 
 #install common tools
@@ -129,10 +129,20 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 RUN /root/.cargo/bin/rustup toolchain install ${RustVersion} && \
     /root/.cargo/bin/rustup default ${RustVersion}
 
-#install node (version configurable via the NodeVersion build-arg; npm is included in the NodeSource nodejs-package)
-RUN curl -fsSL https://deb.nodesource.com/setup_${NodeVersion}.x | bash - && \
-    apt-get install -y nodejs && \
-    rm -rf /var/lib/apt/lists/*
+#install node (exact NodeVersion pinned via the official nodejs.org-tarball; npm is bundled in the tarball). The NodeSource
+#setup-scripts only publish per-major URLs (setup_22.x), so pinning a build-level version via them is not possible and the
+#tarball is the only way to install exactly the pinned build. The architecture-token used by nodejs.org (x64/arm64) is
+#derived from "dpkg --print-architecture" (amd64/arm64), analog to the other tool-installs in this file.
+RUN ARCHITECTURE="$(dpkg --print-architecture)" && \
+    case "${ARCHITECTURE}" in \
+        amd64) NODE_ARCH="x64" ;; \
+        arm64) NODE_ARCH="arm64" ;; \
+        *) echo "Unsupported architecture: ${ARCHITECTURE}" >&2; exit 1 ;; \
+    esac && \
+    curl -fsSL "https://nodejs.org/dist/v${NodeVersion}/node-v${NodeVersion}-linux-${NODE_ARCH}.tar.xz" -o /tmp/node.tar.xz && \
+    tar -C /usr/local --strip-components=1 -xJf /tmp/node.tar.xz && \
+    rm /tmp/node.tar.xz && \
+    node --version && npm --version
 
 #install angular-cli
 RUN npm install -g @angular/cli@${AngularCliVersion} && \
