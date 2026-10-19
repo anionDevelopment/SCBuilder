@@ -7,7 +7,7 @@ ARG GoVersion
 ARG PlatformForGoVersion
 ARG JavaVersion
 ARG JavaBuildVersion
-ARG KotlinVersion
+ARG PlatformForJavaVersion=x64
 ARG NodeVersion
 # Exact debian-package-version of chromium (used for the headless browser-based frontend-tests), passed in from
 # Other/Resources/Dependencies/Chromium/Version.txt. Pinned so that the image always contains a chromium-build which is
@@ -44,7 +44,6 @@ ARG GulpCliVersion
 ARG JqVersion
 ARG YqVersion
 ARG ShellCheckVersion
-ARG CodespellVersion
 ARG GitLfsVersion
 ARG GitHubCliVersion
 ARG GitLabCliVersion
@@ -77,11 +76,8 @@ RUN mkdir /Workspace && \
 
 #install java (Eclipse-Temurin). Installed from the Temurin-tarball (like Go) instead of the Debian-openjdk-apt-package so
 #the exact build can be pinned. This is the system-JDK used by maven and other JVM-tooling;
-#The architecture-token of temurin (x64/aarch64) is determined at build-time from the one of debian (amd64/arm64), so the
-#instruction works for every platform this image is built for; an unsupported architecture lets the image-build fail.
-RUN case "$(dpkg --print-architecture)" in amd64) JAVA_ARCHITECTURE="x64" ;; arm64) JAVA_ARCHITECTURE="aarch64" ;; *) echo "Unsupported architecture for java: $(dpkg --print-architecture)" >&2 && exit 1 ;; esac && \
-    JAVA_ASSET_VERSION="$(echo "${JavaBuildVersion}" | tr '+' '_')" && \
-    curl -fsSL "https://github.com/adoptium/temurin${JavaVersion}-binaries/releases/download/jdk-${JavaBuildVersion}/OpenJDK${JavaVersion}U-jdk_${JAVA_ARCHITECTURE}_linux_hotspot_${JAVA_ASSET_VERSION}.tar.gz" -o /tmp/java.tar.gz && \
+RUN JAVA_ASSET_VERSION="$(echo "${JavaBuildVersion}" | tr '+' '_')" && \
+    curl -fsSL "https://github.com/adoptium/temurin${JavaVersion}-binaries/releases/download/jdk-${JavaBuildVersion}/OpenJDK${JavaVersion}U-jdk_${PlatformForJavaVersion}_linux_hotspot_${JAVA_ASSET_VERSION}.tar.gz" -o /tmp/java.tar.gz && \
     mkdir -p /usr/local/java && \
     tar -C /usr/local/java --strip-components=1 -xzf /tmp/java.tar.gz && \
     rm /tmp/java.tar.gz
@@ -89,20 +85,20 @@ ENV JAVA_HOME="/usr/local/java"
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 ENV ISRUNNINGINBUILDCONTAINER="true"
 
-#install the kotlin-compiler. It is installed from the official release-artifact of JetBrains/kotlin and not from the
-#debian-package "kotlin", although that package exists: debian still ships kotlin 1.3.31 there, which is several
-#major-versions behind the current compiler, and the debian-mirrors do not allow an exact version-pin anyway (the same
-#reason which is documented for the cli-tools below). The artifact contains the compiler as jvm-application and is
-#therefore architecture-independent; it is run by the java installed above. The version is pinned via the
-#KotlinVersion-build-argument, see Other/Resources/Dependencies/Kotlin/Version.txt.
-#The archive contains the folder "kotlinc", so unpacking it into /usr/local yields /usr/local/kotlinc.
-#The compiler is called once at the end, so a broken or wrongly-named artifact lets the image-build fail instead of
-#failing the pipeline of a consuming repository.
-RUN curl -fsSL "https://github.com/JetBrains/kotlin/releases/download/v${KotlinVersion}/kotlin-compiler-${KotlinVersion}.zip" -o /tmp/kotlin.zip && \
-    unzip -q /tmp/kotlin.zip -d /usr/local && \
-    rm /tmp/kotlin.zip && \
-    /usr/local/kotlinc/bin/kotlinc -version
-ENV PATH="/usr/local/kotlinc/bin:${PATH}"
+#install ca-certificates-java so that the JVM honors the system-wide trust-store. The TrustedRootCA-mechanism of ScriptCollection
+#(see the article "TrustedRootCAs" of its reference, respectively TFCPS_CodeUnit_BuildCodeUnits.__collect_trusted_root_ca_arguments
+#and SCBuilder/EntryPoint.sh) writes host-provided root-CA-certificates into /usr/local/share/ca-certificates/ at container-start and
+#then runs "update-ca-certificates". ca-certificates-java installs the update-hook /etc/ca-certificates/update.d/jks-keystore which
+#that run triggers, so the injected CAs end up in the shared JKS at /etc/ssl/certs/java/cacerts. Temurin was installed above into
+#/usr/local/java and ships its own cacerts under $JAVA_HOME/lib/security/cacerts; we replace that file by a symlink to the shared
+#location so Temurin reads the shared JKS transparently and no second mechanism is required for the JVM. The symlink is created
+#before the apt-install so that the postinst-script of ca-certificates-java populates the keystore against Temurin from the start.
+#JAVA_HOME and PATH are already set above, so the postinst can resolve "java"/"keytool" via Temurin.
+RUN rm -f "${JAVA_HOME}/lib/security/cacerts" && \
+    ln -sf /etc/ssl/certs/java/cacerts "${JAVA_HOME}/lib/security/cacerts" && \
+    apt-get update && \
+    apt-get install -y ca-certificates-java && \
+    rm -rf /var/lib/apt/lists/*
 
 #install dotnet
 RUN wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
@@ -116,7 +112,7 @@ ENV PATH="/root/.dotnet/tools:${PATH}"
 #install epew
 RUN wget https://github.com/anionDevelopment/Epew/releases/download/v${EpewVersion}/Epew_Artifacts_v${EpewVersion}.zip -O /tmp/epew.zip && \
     unzip /tmp/epew.zip -d /tmp/epew && \
-    apt-get install -y /tmp/epew/BuildResult_Deb/Epew.deb && \
+    apt-get install -y /tmp/epew/Epew/BuildResult_Deb/Epew.deb && \
     rm -rf /tmp/epew.zip /tmp/epew
 
 #install common tools
@@ -133,20 +129,20 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 RUN /root/.cargo/bin/rustup toolchain install ${RustVersion} && \
     /root/.cargo/bin/rustup default ${RustVersion}
 
-#install node. Installed from the official release-tarball of nodejs.org (like Go and Java) instead of the
-#NodeSource-apt-repository so the exact version can be pinned via the NodeVersion-build-argument, see
-#Other/Resources/Dependencies/Node/Version.txt. npm and npx are part of the tarball.
-#The architecture-token of nodejs.org (x64/arm64) is determined at build-time from the one of debian (amd64/arm64), so the
-#instruction works for every platform this image is built for; an unsupported architecture lets the image-build fail.
-#node is called once at the end, so a broken or wrongly-named artifact lets the image-build fail instead of failing the
-#pipeline of a consuming repository.
-RUN case "$(dpkg --print-architecture)" in amd64) NODE_ARCHITECTURE="x64" ;; arm64) NODE_ARCHITECTURE="arm64" ;; *) echo "Unsupported architecture for node: $(dpkg --print-architecture)" >&2 && exit 1 ;; esac && \
-    curl -fsSL "https://nodejs.org/dist/v${NodeVersion}/node-v${NodeVersion}-linux-${NODE_ARCHITECTURE}.tar.xz" -o /tmp/node.tar.xz && \
-    mkdir -p /usr/local/node && \
-    tar -C /usr/local/node --strip-components=1 -xJf /tmp/node.tar.xz && \
+#install node (exact NodeVersion pinned via the official nodejs.org-tarball; npm is bundled in the tarball). The NodeSource
+#setup-scripts only publish per-major URLs (setup_22.x), so pinning a build-level version via them is not possible and the
+#tarball is the only way to install exactly the pinned build. The architecture-token used by nodejs.org (x64/arm64) is
+#derived from "dpkg --print-architecture" (amd64/arm64), analog to the other tool-installs in this file.
+RUN ARCHITECTURE="$(dpkg --print-architecture)" && \
+    case "${ARCHITECTURE}" in \
+        amd64) NODE_ARCH="x64" ;; \
+        arm64) NODE_ARCH="arm64" ;; \
+        *) echo "Unsupported architecture: ${ARCHITECTURE}" >&2; exit 1 ;; \
+    esac && \
+    curl -fsSL "https://nodejs.org/dist/v${NodeVersion}/node-v${NodeVersion}-linux-${NODE_ARCH}.tar.xz" -o /tmp/node.tar.xz && \
+    tar -C /usr/local --strip-components=1 -xJf /tmp/node.tar.xz && \
     rm /tmp/node.tar.xz && \
-    /usr/local/node/bin/node --version
-ENV PATH="/usr/local/node/bin:${PATH}"
+    node --version && npm --version
 
 #install angular-cli
 RUN npm install -g @angular/cli@${AngularCliVersion} && \
@@ -322,12 +318,6 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir ${PipIndexUrlArguments} scriptcollection==${ScriptCollectionVersion}
-
-#install codespell (spell-checker for source-code). The version is pinned via the CodespellVersion-build-argument, see
-#Other/Resources/Dependencies/Codespell/Version.txt. codespell is called once at the end, so a broken install lets the
-#image-build fail instead of failing the pipeline of a consuming repository.
-RUN pip install --no-cache-dir ${PipIndexUrlArguments} codespell==${CodespellVersion} && \
-    codespell --version
 
 # install ai-related things. Every tool is pinned via the corresponding Other/Resources/Dependencies/<Tool>/Version.txt-file,
 # analog to the other tools of this image.

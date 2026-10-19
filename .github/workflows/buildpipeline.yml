@@ -30,10 +30,7 @@ jobs:
       - name: Prepare build-pipeline
         run: scpreparebuildpipelineforgithub
       - name: Build codeunits
-        # The free-text-input is passed as environment-variable and not interpolated into the script, so that its value can not inject commands.
-        env:
-          TARGET_ENVIRONMENT_TYPE: ${{ inputs.TargetEnvironmentType }}
-        run: scbuildcodeunits --assertnonewchanges --verbosity 4 --targetenvironment "$TARGET_ENVIRONMENT_TYPE"${{ inputs.FastLane == 'true' && ' --fastlane' || '' }}
+        run: scbuildcodeunits --assertnonewchanges --verbosity 4 --targetenvironment "${{ inputs.TargetEnvironmentType }}"${{ inputs.FastLane == 'true' && ' --fastlane' || '' }}
       - name: Upload artifacts
         if: success()
         uses: actions/upload-artifact@v4

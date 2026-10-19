@@ -115,16 +115,6 @@ class Updater:
         return [release["version"] for release in answer["releases"] if release["channel"] == "stable" and re.match(r"^\d+\.\d+\.\d+$", release["version"]) is not None]
 
     @GeneralUtilities.check_arguments
-    def __get_available_versions_of_node(self) -> list[str]:
-        """Returns the versions which node released.
-
-        The release-index of nodejs.org is asked and not the tags of the github-project: that project has far more tags
-        than the pages of tags which are read hold, and the index is additionally the list of the releases the tarball
-        of the image is downloaded from. The index states each version with the prefix "v", which is removed here."""
-        answer = self.__load_json("https://nodejs.org/dist/index.json")
-        return [release["version"][1:] for release in answer if re.match(r"^v\d+\.\d+\.\d+$", release["version"]) is not None]
-
-    @GeneralUtilities.check_arguments
     def __get_available_versions_of_nuget_package(self, package_id: str) -> list[str]:
         """Returns the released versions of the given nuget-package.
 
@@ -214,9 +204,6 @@ class Updater:
     def __update_dependency_codex(self):
         self.__update_npm_dependency("Codex", "@openai/codex")
 
-    def __update_dependency_codespell(self):
-        self.__update_pypi_dependency("Codespell", "codespell")
-
     def __update_dependency_copilot(self):
         self.__update_npm_dependency("Copilot", "@github/copilot")
 
@@ -245,15 +232,7 @@ class Updater:
         self.__update_npm_dependency("Eslint", "eslint")
 
     def __update_dependency_flutter(self):
-        # Not updated here: this image is not the only environment which builds a flutter-codeunit. The
-        # android-target of such a codeunit is built on the android-task-runner (see the SCTaskRunnerAndroid-codeunit
-        # of this repository, which pins the same version), everything else on the machine of the developer or of the
-        # build-agent, and a flutter-package states in its "pubspec.yaml" which Dart-SDK it is built with. An
-        # environment whose flutter differs from the others therefore either can not resolve the packages at all or
-        # produces screenshots which do not match the checked-in baseline-images of the visual-regression-tests. The
-        # version is raised by hand - here, in SCTaskRunnerAndroid and on the machines of the developers together - so
-        # that it can not drift apart environment by environment, depending on where the update ran last.
-        pass
+        self.__update_dependency("Flutter", self.__get_available_versions_of_flutter())
 
     def __update_dependency_geminicli(self):
         self.__update_npm_dependency("GeminiCli", "@google/gemini-cli")
@@ -291,9 +270,6 @@ class Updater:
     def __update_dependency_jq(self):
         self.__update_github_dependency("Jq", "jqlang/jq", "jq-")
 
-    def __update_dependency_kotlin(self):
-        self.__update_github_dependency("Kotlin", "JetBrains/kotlin", "v")
-
     def __update_dependency_kubectl(self):
         self.__update_github_dependency("Kubectl", "kubernetes/kubernetes", "v")
 
@@ -304,7 +280,9 @@ class Updater:
         self.__update_pypi_dependency("MistralVibe", "mistral-vibe")
 
     def __update_dependency_node(self):
-        self.__update_dependency("Node", self.__get_available_versions_of_node())
+        # Not updated here: the pinned value ("22") is the major-version which the nodesource-setup-script
+        # expects, and a new major-version is taken over deliberately (see the echolon above).
+        pass
 
     def __update_dependency_opencode(self):
         self.__update_npm_dependency("OpenCode", "opencode-ai")
@@ -354,54 +332,63 @@ class Updater:
     def __update_dependency_yq(self):
         self.__update_github_dependency("Yq", "mikefarah/yq", "v")
 
+    def __try_update(self, update_function) -> None:
+        """Runs the given update-function and emits a warning if it raises.
+
+        A single failing update (for example because the api which answers with the versions is temporarily
+        unreachable or exceeded its rate-limit) must not stop the whole script, so that the other dependencies are
+        updated regardless."""
+        try:
+            update_function()
+        except Exception as exception:
+            GeneralUtilities.write_exception_to_stderr(exception, f"Warning: The update of a dependency failed in \"{update_function.__name__}\". The script continues with the next dependency.")
+
     def update_dependencies(self):
-        self.__update_dependency_angularcli()
-        self.__update_dependency_azurecli()
-        self.__update_dependency_chromium()
-        self.__update_dependency_claude()
-        self.__update_dependency_codex()
-        self.__update_dependency_codespell()
-        self.__update_dependency_copilot()
-        self.__update_dependency_cyclonedx()
-        self.__update_dependency_cyclonedxnpm()
-        self.__update_dependency_docfx()
-        self.__update_dependency_dotnetsdk()
-        self.__update_dependency_dotnett4()
-        self.__update_dependency_epew()
-        self.__update_dependency_eslint()
-        self.__update_dependency_flutter()
-        self.__update_dependency_geminicli()
-        self.__update_dependency_githubcli()
-        self.__update_dependency_gitlabcli()
-        self.__update_dependency_gitlfs()
-        self.__update_dependency_gitversiontool()
-        self.__update_dependency_go()
-        self.__update_dependency_gotask()
-        self.__update_dependency_gulpcli()
-        self.__update_dependency_helm()
-        self.__update_dependency_jdk()
-        self.__update_dependency_jq()
-        self.__update_dependency_kotlin()
-        self.__update_dependency_kubectl()
-        self.__update_dependency_kustomize()
-        self.__update_dependency_mistralvibe()
-        self.__update_dependency_node()
-        self.__update_dependency_opencode()
-        self.__update_dependency_openspec()
-        self.__update_dependency_playwright()
-        self.__update_dependency_pnpm()
-        self.__update_dependency_prettier()
-        self.__update_dependency_reportgenerator()
-        self.__update_dependency_rust()
-        self.__update_dependency_scriptcollection()
-        self.__update_dependency_shellcheck()
-        self.__update_dependency_swashbuckle()
-        self.__update_dependency_typescript()
-        self.__update_dependency_vega()
-        self.__update_dependency_vegacli()
-        self.__update_dependency_vegaembed()
-        self.__update_dependency_vegalite()
-        self.__update_dependency_yq()
+        self.__try_update(self.__update_dependency_angularcli)
+        self.__try_update(self.__update_dependency_azurecli)
+        self.__try_update(self.__update_dependency_chromium)
+        self.__try_update(self.__update_dependency_claude)
+        self.__try_update(self.__update_dependency_codex)
+        self.__try_update(self.__update_dependency_copilot)
+        self.__try_update(self.__update_dependency_cyclonedx)
+        self.__try_update(self.__update_dependency_cyclonedxnpm)
+        self.__try_update(self.__update_dependency_docfx)
+        self.__try_update(self.__update_dependency_dotnetsdk)
+        self.__try_update(self.__update_dependency_dotnett4)
+        self.__try_update(self.__update_dependency_epew)
+        self.__try_update(self.__update_dependency_eslint)
+        self.__try_update(self.__update_dependency_flutter)
+        self.__try_update(self.__update_dependency_geminicli)
+        self.__try_update(self.__update_dependency_githubcli)
+        self.__try_update(self.__update_dependency_gitlabcli)
+        self.__try_update(self.__update_dependency_gitlfs)
+        self.__try_update(self.__update_dependency_gitversiontool)
+        self.__try_update(self.__update_dependency_go)
+        self.__try_update(self.__update_dependency_gotask)
+        self.__try_update(self.__update_dependency_gulpcli)
+        self.__try_update(self.__update_dependency_helm)
+        self.__try_update(self.__update_dependency_jdk)
+        self.__try_update(self.__update_dependency_jq)
+        self.__try_update(self.__update_dependency_kubectl)
+        self.__try_update(self.__update_dependency_kustomize)
+        self.__try_update(self.__update_dependency_mistralvibe)
+        self.__try_update(self.__update_dependency_node)
+        self.__try_update(self.__update_dependency_opencode)
+        self.__try_update(self.__update_dependency_openspec)
+        self.__try_update(self.__update_dependency_playwright)
+        self.__try_update(self.__update_dependency_pnpm)
+        self.__try_update(self.__update_dependency_prettier)
+        self.__try_update(self.__update_dependency_reportgenerator)
+        self.__try_update(self.__update_dependency_rust)
+        self.__try_update(self.__update_dependency_scriptcollection)
+        self.__try_update(self.__update_dependency_shellcheck)
+        self.__try_update(self.__update_dependency_swashbuckle)
+        self.__try_update(self.__update_dependency_typescript)
+        self.__try_update(self.__update_dependency_vega)
+        self.__try_update(self.__update_dependency_vegacli)
+        self.__try_update(self.__update_dependency_vegaembed)
+        self.__try_update(self.__update_dependency_vegalite)
+        self.__try_update(self.__update_dependency_yq)
 
 def update_dependencies():
     updater=Updater()
