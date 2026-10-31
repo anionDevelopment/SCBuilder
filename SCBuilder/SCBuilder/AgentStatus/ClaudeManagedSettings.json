@@ -1,0 +1,22 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      { "hooks": [{ "type": "command", "command": "/usr/local/bin/scrais-agent-status working" }] }
+    ],
+    "PreToolUse": [
+      { "matcher": "AskUserQuestion", "hooks": [{ "type": "command", "command": "/usr/local/bin/scrais-agent-status blocked" }] }
+    ],
+    "PermissionRequest": [
+      { "hooks": [{ "type": "command", "command": "/usr/local/bin/scrais-agent-status blocked" }] }
+    ],
+    "Notification": [
+      { "matcher": "permission_prompt|elicitation_dialog|elicitation_url_dialog", "hooks": [{ "type": "command", "command": "/usr/local/bin/scrais-agent-status blocked" }] }
+    ],
+    "PostToolUse": [
+      { "hooks": [{ "type": "command", "command": "/usr/local/bin/scrais-agent-status working" }] }
+    ],
+    "Stop": [
+      { "hooks": [{ "type": "command", "command": "/usr/local/bin/scrais-agent-status idle" }] }
+    ]
+  }
+}

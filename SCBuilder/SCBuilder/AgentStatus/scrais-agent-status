@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Reports the state of the coding-agent to scrais (see the article "RunAgentInSandbox" of ScriptCollection). The hooks of the
+# agents call this script with one of the tokens "working", "idle" or "blocked".
+# scrais only mounts the event-folder when the status is reported, so this script does nothing in every other case.
+# The script is called by the hooks of the agents, and they interpret stdout as a response and a failure as a problem. It
+# therefore has no output and always succeeds, so that it can not influence the agent.
+exec >/dev/null 2>&1
+event_folder="/Workspace/Temp/AgentStatus"
+if [ -d "${event_folder}" ]; then
+    printf '%s\n' "$1" >>"${event_folder}/events"
+fi
+exit 0

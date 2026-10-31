@@ -329,6 +329,32 @@ RUN npm install -g @anthropic-ai/claude-code@${ClaudeCodeVersion} && \
     npm install -g opencode-ai@${OpenCodeVersion} && \
     pip install mistral-vibe==${MistralVibeVersion}
 
+# report the state of the coding-agents to scrais, which forwards it to herdr (see the article "RunAgentInSandbox" of ScriptCollection).
+# Every agent reports through the same helper, only the hook-configuration differs. The configuration of an agent can be replaced by
+# an initialization-script of scrais (for example "~/.claude/settings.json"), therefore the hooks are stored in the managed
+# configuration of the agent or in an own file. The helper does nothing without the event-folder of scrais, so these hooks have no
+# effect for builds or for an agent which is started in another way.
+COPY SCBuilder/AgentStatus/scrais-agent-status /usr/local/bin/scrais-agent-status
+COPY SCBuilder/AgentStatus/ClaudeManagedSettings.json /etc/claude-code/managed-settings.json
+COPY SCBuilder/AgentStatus/CodexRequirements.toml /etc/codex/requirements.toml
+COPY SCBuilder/AgentStatus/CopilotHooks.json /root/.copilot/hooks/scrais-agent-status.json
+COPY SCBuilder/AgentStatus/OpenCodePlugin.js /root/.config/opencode/plugins/scrais-agent-status.js
+COPY SCBuilder/AgentStatus/VibeHooks.toml /root/.vibe/hooks.toml
+RUN chmod +x /usr/local/bin/scrais-agent-status && \
+    mkdir -p /etc/codex/hooks && \
+    ln -s /usr/local/bin/scrais-agent-status /etc/codex/hooks/scrais-agent-status
+# The smoke-test ensures that the helper fulfills its contract and that every configuration is present, is valid and calls the helper:
+# a broken configuration must let the image-build fail instead of breaking the start of an agent in a consuming repository.
+RUN test -z "$(scrais-agent-status working)" && \
+    mkdir -p /Workspace/Temp/AgentStatus && \
+    scrais-agent-status working && \
+    test "$(cat /Workspace/Temp/AgentStatus/events)" = "working" && \
+    rm -rf /Workspace/Temp/AgentStatus && \
+    jq -e . /etc/claude-code/managed-settings.json /root/.copilot/hooks/scrais-agent-status.json > /dev/null && \
+    python3 -c "import tomllib; [tomllib.load(open(file, 'rb')) for file in ['/etc/codex/requirements.toml', '/root/.vibe/hooks.toml']]" && \
+    node --check --input-type=module < /root/.config/opencode/plugins/scrais-agent-status.js && \
+    grep -q scrais-agent-status /etc/claude-code/managed-settings.json /etc/codex/requirements.toml /root/.copilot/hooks/scrais-agent-status.json /root/.config/opencode/plugins/scrais-agent-status.js /root/.vibe/hooks.toml
+
 # download common tools that can be used at runtime
 RUN scdownloadcachabletools -v
 

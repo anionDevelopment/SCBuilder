@@ -1,0 +1,29 @@
+# Managed hooks are used because they are trusted by policy (user-hooks would require an interactive trust-decision) and because
+# an initialization-script of scrais can not replace them when it writes "~/.codex/config.toml".
+[hooks]
+managed_dir = "/etc/codex/hooks"
+
+[[hooks.UserPromptSubmit]]
+[[hooks.UserPromptSubmit.hooks]]
+type = "command"
+command = "/etc/codex/hooks/scrais-agent-status working"
+
+[[hooks.PermissionRequest]]
+[[hooks.PermissionRequest.hooks]]
+type = "command"
+command = "/etc/codex/hooks/scrais-agent-status blocked"
+
+[[hooks.PostToolUse]]
+[[hooks.PostToolUse.hooks]]
+type = "command"
+command = "/etc/codex/hooks/scrais-agent-status working"
+
+[[hooks.Stop]]
+[[hooks.Stop.hooks]]
+type = "command"
+command = "/etc/codex/hooks/scrais-agent-status idle"
+
+[[hooks.Interrupt]]
+[[hooks.Interrupt.hooks]]
+type = "command"
+command = "/etc/codex/hooks/scrais-agent-status idle"

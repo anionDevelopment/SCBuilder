@@ -1,0 +1,21 @@
+# Reports the state of Mistral Vibe to scrais (see the article "RunAgentInSandbox" of ScriptCollection).
+# Vibe has no event for the submission of a prompt and no event for an approval-request, so "working" starts with the first tool
+# and "blocked" is not available. pre_tool runs before the approval-prompt.
+# A post_agent-hook can not be limited to the main agent in the used version of Vibe because "match" is rejected there, so the end
+# of a subagent also reports "idle" until the next tool starts.
+[[hooks]]
+name = "scrais-agent-status-pre-tool"
+type = "pre_tool"
+match = "*"
+command = "/usr/local/bin/scrais-agent-status working"
+
+[[hooks]]
+name = "scrais-agent-status-post-tool"
+type = "post_tool"
+match = "*"
+command = "/usr/local/bin/scrais-agent-status working"
+
+[[hooks]]
+name = "scrais-agent-status-post-agent"
+type = "post_agent"
+command = "/usr/local/bin/scrais-agent-status idle"

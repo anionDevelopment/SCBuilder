@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "hooks": {
+    "userPromptSubmitted": [
+      { "type": "command", "bash": "/usr/local/bin/scrais-agent-status working" }
+    ],
+    "notification": [
+      { "type": "command", "matcher": "permission_prompt|elicitation_dialog", "bash": "/usr/local/bin/scrais-agent-status blocked" }
+    ],
+    "postToolUse": [
+      { "type": "command", "bash": "/usr/local/bin/scrais-agent-status working" }
+    ],
+    "agentStop": [
+      { "type": "command", "bash": "/usr/local/bin/scrais-agent-status idle" }
+    ]
+  }
+}
