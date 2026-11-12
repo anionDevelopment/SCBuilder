@@ -15,7 +15,7 @@ ENV RUNNER_HOME="/home/runner"
 
 #basic tooling required by the runner-agent and the entrypoint
 RUN apt-get update && \
-    apt-get install -y curl ca-certificates git jq gnupg tar unzip && \
+    apt-get install -y curl ca-certificates git jq gnupg tar unzip procps && \
     rm -rf /var/lib/apt/lists/*
 
 #docker-cli: the runner needs it to start the job-container on the host-daemon (via the mounted docker.sock)
@@ -54,5 +54,8 @@ ENV ACTIONS_RUNNER_CONTAINER_HOOKS="/opt/container-hooks/PrepareJobMountHook.js"
 
 COPY SCGitHubRunner/EntryPoint.sh /EntryPoint.sh
 RUN chmod +x /EntryPoint.sh
+
+# The runner is considered healthy as long as its listener-process (started by run.sh in EntryPoint.sh) is running.
+HEALTHCHECK --interval=30s --timeout=20s --start-period=2m CMD pgrep --full Runner.Listener
 
 ENTRYPOINT ["/EntryPoint.sh"]

@@ -99,6 +99,8 @@ RUN pip install --no-cache-dir ${PipIndexUrlArguments} scriptcollection==${Scrip
 #the SCTaskRunner_*-environment-variables it reads.
 COPY SCTaskRunnerAndroid/EntryPoint.sh /usr/local/bin/EntryPoint.sh
 COPY SCTaskRunnerAndroid/SCTaskRunnerAndroidCore.py /usr/local/bin/SCTaskRunnerAndroidCore.py
-RUN chmod +x /usr/local/bin/EntryPoint.sh
+COPY SCTaskRunnerAndroid/HealthCheck.sh /usr/local/bin/HealthCheck.sh
+RUN chmod +x /usr/local/bin/EntryPoint.sh /usr/local/bin/HealthCheck.sh
+HEALTHCHECK --interval=30s --timeout=20s --start-period=2m CMD /usr/local/bin/HealthCheck.sh
 
 ENTRYPOINT ["/usr/local/bin/EntryPoint.sh"]
