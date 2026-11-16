@@ -4,12 +4,20 @@
   <version>1.2.19</version>
   <codeunitownername>Marius Göcke</codeunitownername>
   <codeunitowneremailaddress>marius.goecke@gmail.com</codeunitowneremailaddress>
-  <properties codeunithastestablesourcecode="false" codeunithasupdatabledependencies="false" throwexceptionifcodeunitfilecannotbevalidated="true" developmentstate="Active development" description="SCBuilder is the builder image to get used with the ScriptCollection.">
+  <properties codeunithastestablesourcecode="false" codeunithasupdatabledependencies="true" throwexceptionifcodeunitfilecannotbevalidated="true" developmentstate="Active development" description="SCBuilder is the builder image to get used with the ScriptCollection.">
     <pipelinedemands />
     <updatesettings>
       <ignoreddependencies>
         <ignoreddependency>cyclonedx-bom</ignoreddependency>
         <ignoreddependency>lxml</ignoreddependency>
+        <ignoreddependency>Chromium</ignoreddependency>
+        <ignoreddependency>Codespell</ignoreddependency>
+        <ignoreddependency>CursorCli</ignoreddependency>
+        <ignoreddependency>DotNetSdk</ignoreddependency>
+        <ignoreddependency>JDK</ignoreddependency>
+        <ignoreddependency>Kotlin</ignoreddependency>
+        <ignoreddependency>Node</ignoreddependency>
+        <ignoreddependency>PlantUML</ignoreddependency>
       </ignoreddependencies>
     </updatesettings>
   </properties>

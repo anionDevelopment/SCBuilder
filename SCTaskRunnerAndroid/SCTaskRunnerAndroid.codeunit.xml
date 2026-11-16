@@ -8,7 +8,7 @@
   <version>1.2.17</version>
   <codeunitownername>Marius Göcke</codeunitownername>
   <codeunitowneremailaddress>marius.goecke@gmail.com</codeunitowneremailaddress>
-  <properties codeunithastestablesourcecode="false" codeunithasupdatabledependencies="false"
+  <properties codeunithastestablesourcecode="false" codeunithasupdatabledependencies="true"
     throwexceptionifcodeunitfilecannotbevalidated="true" developmentstate="Active development"
     description="SCTaskRunnerAndroid is a container-image that provides an HTTP-server which builds Android-app build-steps (e.g. flutter appbundle-builds) on behalf of remote clients (see ScriptCollection's TFCPS_RemoteBuild), using the Android-SDK/NDK/Flutter-toolchain bundled in this image.">
     <pipelinedemands />
@@ -16,6 +16,12 @@
       <ignoreddependencies>
         <ignoreddependency>cyclonedx-bom</ignoreddependency>
         <ignoreddependency>lxml</ignoreddependency>
+        <ignoreddependency>AndroidBuildTools</ignoreddependency>
+        <ignoreddependency>AndroidCmdlineTools</ignoreddependency>
+        <ignoreddependency>AndroidNdk</ignoreddependency>
+        <ignoreddependency>AndroidPlatform</ignoreddependency>
+        <ignoreddependency>Flutter</ignoreddependency>
+        <ignoreddependency>JDK</ignoreddependency>
       </ignoreddependencies>
     </updatesettings>
   </properties>

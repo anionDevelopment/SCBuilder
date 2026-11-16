@@ -57,6 +57,7 @@ ARG ClaudeCodeVersion
 ARG CodexVersion
 ARG CopilotVersion
 ARG GeminiCliVersion
+ARG CursorCliVersion
 ARG OpenSpecVersion
 ARG OpenCodeVersion
 ARG MistralVibeVersion
@@ -328,6 +329,19 @@ RUN npm install -g @anthropic-ai/claude-code@${ClaudeCodeVersion} && \
     npm install -g @fission-ai/openspec@${OpenSpecVersion} && \
     npm install -g opencode-ai@${OpenCodeVersion} && \
     pip install mistral-vibe==${MistralVibeVersion}
+
+# install cursor-cli. Cursor does not publish it as npm- or pip-package, its official installer (https://cursor.com/install) only
+# downloads the release-artifact of the version which is the newest one at that time. Therefore the release-artifact of the pinned
+# version is downloaded directly from the same location the installer uses. The architecture-token is the one which the installer
+# uses (x64/arm64). Both commands which the installer creates ("cursor-agent" and "agent") are linked into the path.
+RUN case "$(uname -m)" in x86_64) ARCHITECTURE="x64";; aarch64) ARCHITECTURE="arm64";; *) echo "Unsupported architecture: $(uname -m)" && exit 1;; esac && \
+    mkdir -p /opt/cursor-agent && \
+    curl -fsSL "https://downloads.cursor.com/lab/${CursorCliVersion}/linux/${ARCHITECTURE}/agent-cli-package.tar.gz" -o /tmp/cursor-agent.tar.gz && \
+    tar -C /opt/cursor-agent --strip-components=1 -xzf /tmp/cursor-agent.tar.gz && \
+    rm /tmp/cursor-agent.tar.gz && \
+    ln -s /opt/cursor-agent/cursor-agent /usr/local/bin/cursor-agent && \
+    ln -s /opt/cursor-agent/cursor-agent /usr/local/bin/agent && \
+    cursor-agent --version
 
 # report the state of the coding-agents to scrais, which forwards it to herdr (see the article "RunAgentInSandbox" of ScriptCollection).
 # Every agent reports through the same helper, only the hook-configuration differs. The configuration of an agent can be replaced by

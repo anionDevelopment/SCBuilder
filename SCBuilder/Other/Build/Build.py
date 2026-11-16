@@ -64,6 +64,7 @@ def build():
         "CodexVersion":dependency_version("Codex"),
         "CopilotVersion":dependency_version("Copilot"),
         "GeminiCliVersion":dependency_version("GeminiCli"),
+        "CursorCliVersion":dependency_version("CursorCli"),
         "OpenSpecVersion":dependency_version("OpenSpec"),
         "OpenCodeVersion":dependency_version("OpenCode"),
         "MistralVibeVersion":dependency_version("MistralVibe"),
