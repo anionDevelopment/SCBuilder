@@ -114,6 +114,16 @@ class Updater:
         answer = self.__load_json(f"https://pypi.org/pypi/{package_name}/json")
         return [version for version, files in answer["releases"].items() if len(files) > 0 and re.match(r"^\d+\.\d+\.\d+$", version) is not None]
 
+    @GeneralUtilities.check_arguments
+    def __get_available_versions_of_crate(self, crate_name: str) -> list[str]:
+        """Returns the released versions of the given crate of crates.io.
+
+        A version which was yanked is not taken into account, because it is not meant to be installed anymore, and
+        only a version which consists of three numbers is taken into account, so that a pre-release does not become
+        the version the image is built with."""
+        answer = self.__load_json(f"https://crates.io/api/v1/crates/{crate_name}/versions")
+        return [version["num"] for version in answer["versions"] if not version.get("yanked", False) and re.match(r"^\d+\.\d+\.\d+$", version["num"]) is not None]
+
     def __get_latest_version_of_cursor_cli(self) -> str:
         """Returns the newest version of cursor-cli.
 
@@ -152,6 +162,10 @@ class Updater:
         self.__tf.register_available_versions_function(dependency_name, lambda current_version: self.__get_available_versions_of_pypi_package(package_name))
 
     @GeneralUtilities.check_arguments
+    def __register_crate_dependency(self, dependency_name: str, crate_name: str) -> None:
+        self.__tf.register_available_versions_function(dependency_name, lambda current_version: self.__get_available_versions_of_crate(crate_name))
+
+    @GeneralUtilities.check_arguments
     def __register_github_dependency(self, dependency_name: str, repository: str, tag_prefix: str) -> None:
         self.__tf.register_available_versions_function(dependency_name, lambda current_version: self.__get_available_versions_of_github_project(repository, tag_prefix, current_version))
 
@@ -175,6 +189,8 @@ class Updater:
         - Node: the major-version is the one which the nodesource-setup-script expects, so it is taken over deliberately."""
         self.__register_npm_dependency("AngularCli", "@angular/cli")
         self.__register_pypi_dependency("AzureCli", "azure-cli")
+        self.__register_crate_dependency("CargoCycloneDx", "cargo-cyclonedx")
+        self.__register_crate_dependency("CargoLlvmCov", "cargo-llvm-cov")
         self.__register_npm_dependency("ClaudeCode", "@anthropic-ai/claude-code")
         self.__register_npm_dependency("Codex", "@openai/codex")
         self.__register_npm_dependency("Copilot", "@github/copilot")

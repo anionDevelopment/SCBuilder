@@ -34,6 +34,8 @@ def build():
         "CycloneDxVersion":dependency_version("CycloneDx"),
         "SwashbuckleVersion":dependency_version("Swashbuckle"),
         "RustVersion":dependency_version("Rust"),
+        "CargoCycloneDxVersion":dependency_version("CargoCycloneDx"),
+        "CargoLlvmCovVersion":dependency_version("CargoLlvmCov"),
         "AngularCliVersion":dependency_version("AngularCli"),
         "GoTaskVersion":dependency_version("GoTask"),
         "PnpmVersion":dependency_version("Pnpm"),

@@ -60,6 +60,14 @@ Global dotnet tools:
 - CycloneDX
 - swashbuckle.aspnetcore.cli
 
+Rust (installed with rustup):
+
+- cargo and rustc
+- clippy (`cargo clippy`)
+- llvm-tools-preview
+- cargo-llvm-cov (`cargo llvm-cov`)
+- cargo-cyclonedx (`cargo cyclonedx`)
+
 ## ScriptCollection cached tools
 
 The Dockerfile runs `scdownloadcachabletools`.
