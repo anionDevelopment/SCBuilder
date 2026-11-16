@@ -28,6 +28,8 @@ ARG DotNetT4Version
 ARG CycloneDxVersion
 ARG SwashbuckleVersion
 ARG RustVersion
+ARG CargoCycloneDxVersion
+ARG CargoLlvmCovVersion
 ARG AngularCliVersion
 ARG GoTaskVersion
 ARG PnpmVersion
@@ -128,6 +130,15 @@ RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 RUN /root/.cargo/bin/rustup toolchain install ${RustVersion} && \
     /root/.cargo/bin/rustup default ${RustVersion}
+
+#install the cargo-tools which ScriptCollection calls for a codeunit with a cargo-project (TFCPS_CodeUnitSpecific_Rust):
+#"cargo clippy" for the linting, "cargo llvm-cov" for the test-coverage (it needs the component "llvm-tools-preview") and
+#"cargo cyclonedx" for the bill-of-materials. "--locked" builds every tool with the dependencies its own Cargo.lock pins,
+#so the same version of a tool is always built from the same sources.
+RUN /root/.cargo/bin/rustup component add clippy llvm-tools-preview && \
+    /root/.cargo/bin/cargo install cargo-cyclonedx --version ${CargoCycloneDxVersion} --locked && \
+    /root/.cargo/bin/cargo install cargo-llvm-cov --version ${CargoLlvmCovVersion} --locked && \
+    rm -rf /root/.cargo/registry /root/.cargo/git
 
 #install node (exact NodeVersion pinned via the official nodejs.org-tarball; npm is bundled in the tarball). The NodeSource
 #setup-scripts only publish per-major URLs (setup_22.x), so pinning a build-level version via them is not possible and the

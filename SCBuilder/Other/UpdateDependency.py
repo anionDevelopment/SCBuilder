@@ -133,6 +133,20 @@ class Updater:
         return [version for version, files in answer["releases"].items() if len(files) > 0 and re.match(r"^\d+\.\d+\.\d+$", version) is not None]
 
     @GeneralUtilities.check_arguments
+    def __get_available_versions_of_crate(self, crate_name: str) -> list[str]:
+        """Returns the released versions of the given crate of crates.io.
+
+        A version which was yanked is not taken into account, because it is not meant to be installed anymore, and
+        only a version which consists of three numbers is taken into account, so that a pre-release does not become
+        the version the image is built with."""
+        answer = self.__load_json(f"https://crates.io/api/v1/crates/{crate_name}/versions")
+        return [version["num"] for version in answer["versions"] if not version.get("yanked", False) and re.match(r"^\d+\.\d+\.\d+$", version["num"]) is not None]
+
+    @GeneralUtilities.check_arguments
+    def __update_crate_dependency(self, dependency_name: str, crate_name: str) -> None:
+        self.__update_dependency(dependency_name, self.__get_available_versions_of_crate(crate_name))
+
+    @GeneralUtilities.check_arguments
     def __update_dependency(self, dependency_name: str, available_versions: list[str], version_prefix: str = "") -> None:
         """Updates the given dependency to the newest of the given versions which the echolon allows.
 
@@ -194,6 +208,12 @@ class Updater:
 
     def __update_dependency_azurecli(self):
         self.__update_pypi_dependency("AzureCli", "azure-cli")
+
+    def __update_dependency_cargocyclonedx(self):
+        self.__update_crate_dependency("CargoCycloneDx", "cargo-cyclonedx")
+
+    def __update_dependency_cargollvmcov(self):
+        self.__update_crate_dependency("CargoLlvmCov", "cargo-llvm-cov")
 
     def __update_dependency_chromium(self):
         pass#TODO
@@ -346,6 +366,8 @@ class Updater:
     def update_dependencies(self):
         self.__try_update(self.__update_dependency_angularcli)
         self.__try_update(self.__update_dependency_azurecli)
+        self.__try_update(self.__update_dependency_cargocyclonedx)
+        self.__try_update(self.__update_dependency_cargollvmcov)
         self.__try_update(self.__update_dependency_chromium)
         self.__try_update(self.__update_dependency_claude)
         self.__try_update(self.__update_dependency_codex)
