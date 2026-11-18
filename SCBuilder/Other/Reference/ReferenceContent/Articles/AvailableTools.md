@@ -70,7 +70,7 @@ Rust (installed with rustup):
 
 ## ScriptCollection cached tools
 
-The Dockerfile runs `scdownloadcachabletools`.
+The Dockerfile runs `scdownloadcacheabletools`.
 This installs additional cacheable tools provided by ScriptCollection. The exact set depends on the ScriptCollection implementation/version.
 See [according documentation in ScriptCollection](https://github.com/anionDevelopment/ScriptCollection/blob/main/ScriptCollection/Other/Reference/ReferenceContent/Articles/DownloadableTools.md).
 

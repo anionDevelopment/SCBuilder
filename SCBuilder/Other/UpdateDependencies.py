@@ -129,7 +129,7 @@ class Updater:
 
         Cursor does not publish a list of its versions. The only source is its official installer, which contains the
         version it downloads. That version consists of a date and a commit-hash (for example "2026.11.13-eacade1")
-        and not of three numbers, so the echolon can not be applied to it and the newest version is always taken over.
+        and not of three numbers, so the echelon can not be applied to it and the newest version is always taken over.
         That is why it is in the ignored dependencies of the codeunit-file and updated by this script itself."""
         request = urllib.request.Request("https://cursor.com/install", headers={"User-Agent": "SCBuilder-UpdateDependencies"})
         with urllib.request.urlopen(request, timeout=Updater.__timeout_in_seconds) as response:

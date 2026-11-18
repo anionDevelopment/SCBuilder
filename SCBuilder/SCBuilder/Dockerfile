@@ -381,6 +381,6 @@ RUN test -z "$(scrais-agent-status working)" && \
     grep -q scrais-agent-status /etc/claude-code/managed-settings.json /etc/codex/requirements.toml /root/.copilot/hooks/scrais-agent-status.json /root/.config/opencode/plugins/scrais-agent-status.js /root/.vibe/hooks.toml
 
 # download common tools that can be used at runtime
-RUN scdownloadcachabletools -v
+RUN scdownloadcacheabletools -v
 
 ENTRYPOINT ["/usr/local/bin/EntryPoint.sh"]

@@ -84,6 +84,16 @@ log-file. It logs:
 The complete output of the built app is **not** part of this log: it belongs to the job and is fetched by the client,
 which prints it as part of its own build-output.
 
+## Metrics
+
+The runner provides the endpoint `GET /metrics`, which returns the amount of currently running jobs (without any detail
+about these jobs) as the gauge `sctaskrunner_running_jobs` in the text-based exposition-format of Prometheus. Like every
+other endpoint it requires the basic-auth-credentials of the runner, so a scraper has to send them. A job counts as running
+from its submit until its program has ended, which includes the extraction of its repository.
+
+This requires the `ScriptCollection`-version pinned in `Other/Resources/Dependencies/ScriptCollection/Version.txt` to be
+`4.4.73` or newer.
+
 ## Which error reaches whom
 
 The runner separates a build which does not work from a runner which does not work:
@@ -163,8 +173,8 @@ services:
     security_opt:
       - no-new-privileges:true
     healthcheck:
-      # "/os" is the discovery-endpoint of the runner-protocol and the only endpoint which answers without a job; it
-      # requires authentication like every other endpoint, hence the credentials.
+      # "/os" is the discovery-endpoint of the runner-protocol and answers without a job; it requires authentication like
+      # every other endpoint, hence the credentials.
       test: ["CMD-SHELL", "curl -fsS -u \"$$SCTaskRunner_Username:$$SCTaskRunner_Password\" http://127.0.0.1:8080/os || exit 1"]
       interval: 60s
       timeout: 10s
@@ -275,6 +285,14 @@ bulk.
 Adding `auth_basic` in the reverse-proxy is possible, but with the same credentials it only checks what the runner checks
 anyway - it is a second lock for the same key, not a second factor. An IP-allowlist, client-certificates or the
 rate-limiting above protect against something the runner-credentials do not cover.
+
+## Secrets of a job
+
+A client can give environment-variables to a job (for example the upload-key with which a productive build of an
+android-app is signed, see the remote-build-article of ScriptCollection). The runner sets them only for the program of
+that job and logs only their names, so they are neither part of the workspace nor of the log of the runner. Like the
+transferred repository they are only as protected on their way as the connection to the runner is, so a runner which
+receives such secrets has to be reachable over TLS only.
 
 ## Make it reachable for the clients
 

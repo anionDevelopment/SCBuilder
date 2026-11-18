@@ -39,3 +39,8 @@ python3 SCTaskRunnerIOS/SCTaskRunnerIOS.py
 
 Expose the runner to the clients over HTTPS (e.g. via a reverse-proxy) and configure its URL/credentials on the client-side
 (`~/.ScriptCollection/TFCPS/Runner.csv` or `Runner_<name>_URL`/`_Username`/`_Password`-environment-variables).
+
+## Metrics
+The runner provides the endpoint `GET /metrics`, which returns the amount of currently running jobs (without any detail
+about these jobs) as the gauge `sctaskrunner_running_jobs` in the text-based exposition-format of Prometheus. Like every
+other endpoint it requires the basic-auth-credentials of the runner. This requires `scriptcollection` 4.4.73 or newer.

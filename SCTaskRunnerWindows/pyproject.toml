@@ -17,7 +17,7 @@ classifiers = [
     "Operating System :: Microsoft :: Windows :: Windows 10",
 ]
 dependencies = [
-    "scriptcollection>=4.3.3",
+    "scriptcollection>=4.4.73",
 ]
 
 [project.scripts]
